@@ -90,15 +90,15 @@ exports.refreshToken = function (req, res) {
         if (tips === 'expired') {
             res.send(JSON.stringify({code: -5, detail: 'refreshToken过期'}));
         } else if (tips === 'tokenError') {
-            res.send(JSON.stringify({code: -3, detail: '验证错误-非法refreshToken'}));
+            res.send(JSON.stringify({code: -3, detail: '非法refreshToken'}));
         }
     }, function (obj) {
-        if (obj.name && obj.refresh) {
+        if (obj.name && obj.refreshtoken) {
             exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
                 res.send(JSON.stringify({code: 0, data: data}));
             });
         } else {
-            res.send(JSON.stringify({code: -4, detail: '不能使用token,要使用refreshtoken'}));
+            res.send(JSON.stringify({code: -4, detail: '非法使用token, 请使用refreshtoken刷新'}));
         }
     })
 };
@@ -106,7 +106,7 @@ exports.refreshToken = function (req, res) {
 exports.tokenMap = {};
 //一个用户可以保留多个token
 function doSign(obj, time) {
-    return function(cb) {
+    return function (cb) {
         exports.sign(obj, time, function (token) {
             var newObj = _.extend(obj, {token: token});
             exports.tokenMap[newObj.name] = {};
@@ -116,13 +116,13 @@ function doSign(obj, time) {
         })
     }
 }
-exports.setTokenToMap = function(obj, cb) {
+exports.setTokenToMap = function (obj, cb) {
     obj.id = obj.id || _.uniqueId('token');
-    async.parallel([
+    async.series([
         //token
-        doSign(obj, "2h"),
+        doSign(_.extend({}, obj, {token: true}), "2h"),
         //refreshtoken
-        doSign(_.extend(obj, {refresh:true}, "15d"))
+        doSign(_.extend({}, obj, {refreshtoken: true}, "15d"))
     ], function (err, results) {
         // all item callback
         cb({id: obj.id, token: results[0], refreshtoken: results[1]});
