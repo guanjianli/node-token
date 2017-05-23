@@ -6,7 +6,7 @@ var token = require("./token.js");
 
 function noteInit(app) {
     app.get('/ser/note', function (req, res) {
-        token.verifyToken(token, req, res, function (name) {
+        token.verifyToken(req, res, function (name) {
             ds.queryUser(name, function (data) {
                 res.send(JSON.stringify({code: 0, data: data}));
             }, function () {
@@ -15,7 +15,7 @@ function noteInit(app) {
         })
     });
     app.get('/ser/addnote', function (req, res) {
-        token.verifyToken(token, req, res, function (name) {
+        token.verifyToken(req, res, function (name) {
             if (!req.query.token || !req.query.note) {
                 res.send(JSON.stringify({code: -5, detail: '参数缺失'}));
                 return;

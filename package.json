@@ -5,7 +5,8 @@
   "main": "login_ext.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node login_ext.js"
+    "start": "node ext.js",
+    "nohup": "nohup node ext.js &"
   },
   "author": "liguanjian",
   "license": "ISC",
@@ -13,6 +14,8 @@
     "express": "^4.15.3",
     "mysql": "",
     "jsonwebtoken": "",
-    "jsonwebtoken-refresh":""
+    "jsonwebtoken-refresh":"",
+    "underscore":"",
+    "async":""
   }
 }

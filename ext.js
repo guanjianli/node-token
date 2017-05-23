@@ -4,7 +4,7 @@ var login = require("./login.js");
 var note = require("./note.js");
 
 //设置跨域访问
-app.all('*', function (req, res, next) {
+app.all('/ser/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -13,11 +13,9 @@ app.all('*', function (req, res, next) {
     next();
 });
 
-app.get("/ser/userid", function (req, res) {
+app.use(express.static('public'));
 
-});
-
-app.get("/", function (req, res) {
+app.get("/info", function (req, res) {
     //res.writeHead(200);
     res.end('wellcome to backend!\n');
 });

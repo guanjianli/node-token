@@ -21,8 +21,8 @@ function loginInit(app) {
                     res.send(JSON.stringify({code: -3, detail: '密码错误'}));
                     //todo 限制下次登录时间，不可以连续暴力刷新
                 } else {
-                    token.sign({name: req.query.name, pw: req.query.password}, function (t) {
-                        res.send(JSON.stringify({code: 0, detail: '登录成功!', token: t}));
+                    token.setTokenToMap({name:req.query.name}, function (data) {
+                        res.send(JSON.stringify({code: 0, data: data}));
                     })
                 }
             }
@@ -69,6 +69,8 @@ function loginInit(app) {
                 } else {
                     ds.changePasswd(req.query.name, req.query.password, function (results) {
                         if (results.affectedRows >= 1) {
+                            //修改密码成功后，以往所有的token会过期
+                            token.tokenMap[dcode.name] = null;
                             res.send(JSON.stringify({code: 0, detail: '修改密码成功'}));
                         } else {
                             res.send(JSON.stringify({code: -3, detail: '修改失败，检查用户名与密码'}));
@@ -81,6 +83,10 @@ function loginInit(app) {
         }, function (err) {
             res.send(JSON.stringify({code: -1, err: err}));
         })
+    });
+
+    app.get('/ser/refresh', function (req, res) {
+        token.refreshToken(req,res);
     });
 }
 
