@@ -93,12 +93,12 @@ exports.refreshToken = function (req, res) {
             res.send(JSON.stringify({code: -3, detail: '验证错误-非法refreshToken'}));
         }
     }, function (obj) {
-        if (obj.name) {
+        if (obj.name && obj.refresh) {
             exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
                 res.send(JSON.stringify({code: 0, data: data}));
             });
         } else {
-            res.send(JSON.stringify({code: -4, detail: 'refreshToken解析错误'}));
+            res.send(JSON.stringify({code: -4, detail: '不能使用token,要使用refreshtoken'}));
         }
     })
 };
@@ -122,7 +122,7 @@ exports.setTokenToMap = function(obj, cb) {
         //token
         doSign(obj, "2h"),
         //refreshtoken
-        doSign(obj, "15d")
+        doSign(_.extend(obj, {refresh:true}, "15d"))
     ], function (err, results) {
         // all item callback
         cb({id: obj.id, token: results[0], refreshtoken: results[1]});
