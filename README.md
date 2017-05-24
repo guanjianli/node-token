@@ -16,7 +16,7 @@
     返回 id, token, refreshtoken
     0 成功
     -4 refreshtoken不能用token代替
-    -1 refreshToken已失效
+    -1 refreshToken已失效(修改密码，服务器重启等因素影响)
     -5 token已过期,refresh过期
     -6 token已过期(refresh未过期)
 
