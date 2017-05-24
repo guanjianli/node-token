@@ -70,7 +70,7 @@ function loginInit(app) {
                     ds.changePasswd(req.query.name, req.query.password, function (results) {
                         if (results.affectedRows >= 1) {
                             //修改密码成功后，以往所有的token会过期
-                            token.tokenMap[dcode.name] = null;
+                            token.tokenMap[req.query.name] = null;
                             res.send(JSON.stringify({code: 0, detail: '修改密码成功'}));
                         } else {
                             res.send(JSON.stringify({code: -3, detail: '修改失败，检查用户名与密码'}));

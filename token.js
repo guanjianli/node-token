@@ -57,7 +57,7 @@ exports.verifyToken = function (req, res, cb) {
                 }
             }, function (obj) {
                 if (obj.name) {
-                    res.send(JSON.stringify({code: -6, detail: 'token已过期，refresh未过期'}));
+                    res.send(JSON.stringify({code: -6, detail: 'token已过期(refresh未过期)'}));
                 } else {
                     res.send(JSON.stringify({code: -7, detail: 'refreshToken解析错误'}));
                 }
@@ -66,10 +66,10 @@ exports.verifyToken = function (req, res, cb) {
             res.send(JSON.stringify({code: -3, detail: '验证错误-非法token'}));
         }
     }, function (obj) {
-        if (obj.name) {
+        if (obj.name && obj.token) {
             cb(obj.name);
         } else {
-            res.send(JSON.stringify({code: -4, detail: 'token解析错误'}));
+            res.send(JSON.stringify({code: -4, detail: 'refreshtoken不能代替token使用'}));
         }
     })
 };
@@ -108,10 +108,11 @@ exports.tokenMap = {};
 function doSign(obj, time) {
     return function (cb) {
         exports.sign(obj, time, function (token) {
-            var newObj = _.extend(obj, {token: token});
-            exports.tokenMap[newObj.name] = {};
-            exports.tokenMap[newObj.name][obj.id] = {};
-            exports.tokenMap[newObj.name][obj.id]["refreshtoken"] = token;
+            if (obj.refreshtoken) {
+                exports.tokenMap[obj.name] = {};
+                exports.tokenMap[obj.name][obj.id] = {};
+                exports.tokenMap[obj.name][obj.id]["refreshtoken"] = token;
+            }
             cb(null, token);
         })
     }
