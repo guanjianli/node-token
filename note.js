@@ -74,10 +74,10 @@ function noteInit(app) {
                 return;
             } else {
                 ds.setContent(name, req.query.content, req.query.id, function (results) {
-                    if (results.affectedRows >= 1) {
+                    if (results.changedRows >= 1) {
                         res.send(JSON.stringify({code: 0, detail: '设置笔记内容成功!'}));
                     } else {
-                        res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
+                        res.send(JSON.stringify({code: 0, detail: 'results changedRows 0'}));
                     }
                 }, function (err) {
                     res.send(JSON.stringify({code: -11, err: err}));
