@@ -22,7 +22,7 @@ exports.queryUser = function (name, cb, reject) {
 
 exports.insertNote = function (name, note, status, cb, reject) {
     query.query(
-        "insert into note (name, note, status) values (?, ?, ?);",
+        "insert into note (name, note, status, time) values (?, ?, ?, now());",
         [name, note, status],
         function (err, results, fields) {
             if (err) {

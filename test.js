@@ -1,8 +1,7 @@
 var express = require('express');
 var app = express();
+var upload = require("./imageupload");
 
-
-//…Ë÷√øÁ”Ú∑√Œ 
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "token,a,b,c");
@@ -13,12 +12,24 @@ app.all('*', function (req, res, next) {
 });
 
 app.use(express.static('public'));
+app.set('view engine', 'html');
 
 app.get("/info", function (req, res) {
     //res.writeHead(200);
-    res.end('wellcome to backend!\n'+req.header('token')+req.header('a'));
+    res.end('wellcome to backend!\n' + req.header('token') + req.header('a'));
 });
 
+app.get('/upit', function (req, res) {
+    res.header("Content-Type", "text/html;charset=utf-8");
+    res.end('<form action="/upload" role="form" method="post" enctype="multipart/form-data">' +
+        '<input type="file" name="fileUp" />' +
+        '<button id="btnSub" type="submit">‰∏ä ‰º†</button>' +
+        '</form>');
+})
 
-app.listen(411)
+app.post('/upload', function (req, res) {
+    upload.upload(req,res);
+});
+
+app.listen(411);
 

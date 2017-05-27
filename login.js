@@ -4,6 +4,8 @@
 
 var ds = require("./login_server.js");
 var token = require("./token.js");
+var _ = require("underscore");
+var upload = require("./imageupload");
 
 function loginInit(app) {
     app.get('/ser/login', function (req, res) {
@@ -22,7 +24,7 @@ function loginInit(app) {
                     //todo 限制下次登录时间，不可以连续暴力刷新
                 } else {
                     token.setTokenToMap({name:req.query.name}, function (data) {
-                        res.send(JSON.stringify({code: 0, data: data}));
+                        res.send(JSON.stringify(_.extend({code: 0}, {avatar:u.avatar} , data)));
                     })
                 }
             }
@@ -44,7 +46,7 @@ function loginInit(app) {
                 ds.insertUser(req.query.name, req.query.password, function () {
                     res.send(JSON.stringify({code: 0, detail: '注册成功!'}));
                 }, function (err) {
-                    res.send(JSON.stringify({code: 0, err: err}));
+                    res.send(JSON.stringify({code: -3, err: err}));
                 })
             }
         }, function (err) {
@@ -70,7 +72,7 @@ function loginInit(app) {
                     ds.changePasswd(req.query.name, req.query.password, function (results) {
                         if (results.affectedRows >= 1) {
                             //修改密码成功后，以往所有的token会过期
-                            token.tokenMap[req.query.name] = null;
+                            token.deleteAll(req.query.name);
                             res.send(JSON.stringify({code: 0, detail: '修改密码成功'}));
                         } else {
                             res.send(JSON.stringify({code: -3, detail: '修改失败，检查用户名与密码'}));
@@ -87,6 +89,25 @@ function loginInit(app) {
 
     app.get('/ser/refresh', function (req, res) {
         token.refreshToken(req,res);
+    });
+
+    app.get('/ser/heartbeat', function (req, res) {
+        token.verifyToken(req, res, function (useName) {
+            res.send(JSON.stringify({code: 0, data: 1}));
+        })
+    });
+
+    //上传头像
+    app.post('/avatar', function (req, res) {
+        token.verifyToken(req, res, function (useName) {
+            upload.upload(req,res,function (url) {
+                ds.setAvatar(url, useName, function () {
+                    res.send(JSON.stringify({code: 0, avatar: url}));
+                }, function (err) {
+                    res.send(JSON.stringify({code: -1, detail: err}));
+                })
+            });
+        })
     });
 }
 

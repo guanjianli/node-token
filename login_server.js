@@ -11,10 +11,6 @@ exports.queryUser = function (name, cb, reject) {
             }
             if (results) {
                 cb(results);
-                // for(var i = 0; i < results.length; i++)
-                // {
-                //   //console.log("%d\t%s\t%s", results[i].id, results[i].content, results[i].score);
-                // }
             }
         }
     );
@@ -38,7 +34,7 @@ exports.insertUser = function (name, password, cb, reject) {
 exports.changePasswd = function (name, password, cb, reject) {
     query.query(
         "update user set password = ? where name = ?;",
-        [password,name],
+        [password, name],
         function (err, results, fields) {
             if (err) {
                 reject(err);
@@ -46,6 +42,21 @@ exports.changePasswd = function (name, password, cb, reject) {
             }
             if (results) {
                 cb(results);
+            }
+        });
+};
+
+exports.setAvatar = function (url, name, cb, reject) {
+    query.query(
+        "update user set avatar = ? where name = ?;",
+        [url, name],
+        function (err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
             }
         });
 };

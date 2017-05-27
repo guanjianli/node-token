@@ -6,20 +6,22 @@ var fs = require("fs");
 var jwt = require('jsonwebtoken');
 var _ = require("underscore");
 var async = require("async");
+var ds = require("./token_server.js");
 
 // sign with RSA SHA256
 var priCert = fs.readFileSync('./liguanjian.key');  // get private key
 var pubCert = fs.readFileSync('./liguanjian.pem');  // get public key
 
-
+//对称加密使用HS256,非对称加密使用RS256
+//如果使用HS256，使用相同的private key加密，解密
 exports.sign = function (obj, expiresIn, cb) {
-    jwt.sign(obj, priCert, {algorithm: 'RS256', expiresIn: expiresIn}, function (err, token) {
+    jwt.sign(obj, priCert, {algorithm: 'HS256', expiresIn: expiresIn}, function (err, token) {
         cb(token);
     });
 };
 
 exports.verify = function (token, errCb, done) {
-    jwt.verify(token, pubCert, {algorithms: ['RS256']}, function (err, decoded) {
+    jwt.verify(token, priCert, {algorithms: ['HS256']}, function (err, decoded) {
         if (err && (err.name == 'TokenExpiredError')) {
             errCb("expired");
         } else if (err && (err.name == 'JsonWebTokenError')) {
@@ -43,30 +45,27 @@ exports.verifyToken = function (req, res, cb) {
     exports.verify(req.query.token, function (tips) {
         if (tips === 'expired') {
             //如果token过期，再验证refresh是否过期
-            var dcode = jwt.decode(req.query.token);
-            if (!exports.tokenMap[dcode.name] || !exports.tokenMap[dcode.name][dcode.id]) {
-                res.send(JSON.stringify({code: -1, detail: 'refreshToken已失效'}));
-                return;
-            }
-            var refreshToken = exports.tokenMap[dcode.name][dcode.id]["refreshtoken"];
-            exports.verify(refreshToken, function (tips) {
-                if (tips === 'expired') {
-                    res.send(JSON.stringify({code: -5, detail: 'token&refreshToken过期，请重新登录'}));
-                } else if (tips === 'tokenError') {
-                    res.send(JSON.stringify({code: -3, detail: '验证错误-非法refreshToken'}));
-                }
-            }, function (obj) {
-                if (obj.name) {
-                    res.send(JSON.stringify({code: -6, detail: 'token已过期(refresh未过期)'}));
-                } else {
-                    res.send(JSON.stringify({code: -7, detail: 'refreshToken解析错误'}));
-                }
+            getRefreshTokenByToken(req.query.token, req, res, function (refreshToken) {
+                exports.verify(refreshToken, function (tips) {
+                    if (tips === 'expired') {
+                        res.send(JSON.stringify({code: -5, detail: 'token&refreshToken过期，请重新登录'}));
+                    } else if (tips === 'tokenError') {
+                        res.send(JSON.stringify({code: -3, detail: '验证错误-非法refreshToken'}));
+                    }
+                }, function (obj) {
+                    if (obj.name) {
+                        res.send(JSON.stringify({code: -6, detail: 'token已过期(refresh未过期)'}));
+                    } else {
+                        res.send(JSON.stringify({code: -7, detail: 'refreshToken解析错误'}));
+                    }
+                })
             })
+
         } else if (tips === 'tokenError') {
             res.send(JSON.stringify({code: -3, detail: '验证错误-非法token'}));
         }
     }, function (obj) {
-        if (obj.name && obj.token) {
+        if (obj.name && obj.isToken) {
             cb(obj.name);
         } else {
             res.send(JSON.stringify({code: -4, detail: 'refreshtoken不能代替token使用'}));
@@ -79,12 +78,6 @@ exports.refreshToken = function (req, res) {
         res.send(JSON.stringify({code: -1, detail: '参数缺失:refreshtoken'}));
         return;
     }
-    var dcode = jwt.decode(req.query.refreshtoken);
-    //res.send(JSON.stringify(exports.tokenMap));
-    if (!exports.tokenMap[dcode.name] || !exports.tokenMap[dcode.name][dcode.id]) {
-        res.send(JSON.stringify({code: -2, detail: 'refreshToken已失效'}));
-        return;
-    }
 
     exports.verify(req.query.refreshtoken, function (tips) {
         if (tips === 'expired') {
@@ -93,9 +86,9 @@ exports.refreshToken = function (req, res) {
             res.send(JSON.stringify({code: -3, detail: '非法refreshToken'}));
         }
     }, function (obj) {
-        if (obj.name && obj.refreshtoken) {
+        if (obj.name && obj.isRefreshtoken) {
             exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
-                res.send(JSON.stringify({code: 0, data: data}));
+                res.send(JSON.stringify(_.extend({code: 0}, data)));
             });
         } else {
             res.send(JSON.stringify({code: -4, detail: '非法使用token, 请使用refreshtoken刷新'}));
@@ -103,29 +96,43 @@ exports.refreshToken = function (req, res) {
     })
 };
 
-exports.tokenMap = {};
+exports.deleteAll = function(name){
+  ds.deleteToken(name)
+};
+
 //一个用户可以保留多个token
 function doSign(obj, time) {
     return function (cb) {
         exports.sign(obj, time, function (token) {
-            if (obj.refreshtoken) {
-                exports.tokenMap[obj.name] = {};
-                exports.tokenMap[obj.name][obj.id] = {};
-                exports.tokenMap[obj.name][obj.id]["refreshtoken"] = token;
-            }
             cb(null, token);
         })
     }
 }
+
+function getRefreshTokenByToken(token, req, res, cb) {
+    ds.queryToken(token, function (results) {
+        if (results.length < 1) {
+            res.send(JSON.stringify({code: -2, detail: 'token没有对应的refreshtoken,可能是已退出登录'}));
+        } else {
+            var u = results[0];
+            cb(u.refreshtoken);
+        }
+    }, function (err) {
+        res.send(JSON.stringify({code: -1, err: err}));
+    })
+}
+
 exports.setTokenToMap = function (obj, cb) {
     obj.id = obj.id || _.uniqueId('token');
-    async.series([
+    async.parallel([
         //token
-        doSign(_.extend({}, obj, {token: true}), "2h"),
+        doSign(_.extend({}, obj, {isToken: true}), "2h"),
         //refreshtoken
-        doSign(_.extend({}, obj, {refreshtoken: true}, "15d"))
+        doSign(_.extend({}, obj, {isRefreshtoken: true}, "15d"))
     ], function (err, results) {
         // all item callback
+        //将token&refreshtoken信息存储至数据库
+        ds.insertToken(obj.name, results[0], results[1]);
         cb({id: obj.id, token: results[0], refreshtoken: results[1]});
     });
 }
