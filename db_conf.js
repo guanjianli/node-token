@@ -26,4 +26,4 @@ var query = function (sql, paras, callback) {
 };
 
 exports.query = query;
-
+exports.pool = pool;

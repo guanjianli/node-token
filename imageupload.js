@@ -36,8 +36,8 @@ exports.upload = function(req, res, cb) {
         }
         if (extName.length === 0) {
             res.send({
-                code: 202,
-                msg: '只支持png和jpg格式图片'
+                code: -1,
+                detail: '只支持png和jpg格式图片'
             });
             return;
         } else {

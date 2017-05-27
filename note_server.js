@@ -18,7 +18,7 @@ exports.queryUser = function (name, cb, reject) {
             }
         }
     );
-}
+};
 
 exports.insertNote = function (name, note, status, cb, reject) {
     query.query(
@@ -33,4 +33,48 @@ exports.insertNote = function (name, note, status, cb, reject) {
                 cb(results);
             }
         });
-}
+};
+
+exports.deleteNote = function (name, ids, cb, reject) {
+    query.query(
+        "delete from note where id in (" + ids + ") and name = " + query.pool.escape(name) + ";",
+        function (err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
+            }
+        });
+};
+
+exports.setStatus = function (name, status, id, cb, reject) {
+    query.query(
+        "update note set status = ? where name = ? and id = ?;",
+        [status, name, id],
+        function (err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
+            }
+        });
+};
+
+exports.setContent = function (name, content, id, cb, reject) {
+    query.query(
+        "update note set note = ? where name = ? and id = ?;",
+        [content, name, id],
+        function (err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
+            }
+        });
+};

@@ -44,6 +44,20 @@
 	'https://www.liguanjian.com/ser/addnote?note=lG9j0yDhA'
 	要求参数 token note(内容)
 	返回:{"code":0,"detail":"插入笔记成功!"}
-	
 
+# 删除笔记
+    'https://www.liguanjian.com/ser/deletenote?token=eyJhbG&ids=97'
+    要求参数 ids
+    批量删除 ids=95,96,97
+    返回:{"code":0,"detail":"删除笔记成功!"}
+	
+# 设置完成状态
+    'https://www.liguanjian.com/ser/notestatus?status=3&id=100&token=eyJhbGci'
+    参数 status id
+    返回 {"code":0,"detail":"设置笔记状态成功!"}
+
+# 修改笔记内容
+    'https://www.liguanjian.com/ser/notestatus?content=hell&id=100&token=eyJhbGci'
+    参数 content id
+    返回 {"code":0,"detail":"设置笔记内容成功!"}
 	
