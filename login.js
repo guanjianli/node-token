@@ -23,8 +23,8 @@ function loginInit(app) {
                     res.send(JSON.stringify({code: -3, detail: '密码错误'}));
                     //todo 限制下次登录时间，不可以连续暴力刷新
                 } else {
-                    token.setTokenToMap({name:req.query.name}, function (data) {
-                        res.send(JSON.stringify(_.extend({code: 0}, {avatar:u.avatar} , data)));
+                    token.setTokenToMap({name: req.query.name}, function (data) {
+                        res.send(JSON.stringify(_.extend({code: 0}, {avatar: u.avatar}, data)));
                     })
                 }
             }
@@ -44,7 +44,7 @@ function loginInit(app) {
                 res.send(JSON.stringify({code: -5, detail: '用户已被注册'}));
             } else {
                 ds.insertUser(req.query.name, req.query.password, function () {
-                    res.send(JSON.stringify({code: 0, detail: '注册成功!'}));
+                    res.send(JSON.stringify({code: 0, detail: '注册成功'}));
                 }, function (err) {
                     res.send(JSON.stringify({code: -3, err: err}));
                 })
@@ -88,7 +88,17 @@ function loginInit(app) {
     });
 
     app.get('/ser/refresh', function (req, res) {
-        token.refreshToken(req,res);
+        token.refreshToken(req, res);
+    });
+
+    app.get('/ser/logout', function (req, res) {
+        if (!req.query.token) {
+            res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
+            return;
+        }
+        token.logoutAToken(req.query.token, res, function () {
+            res.send(JSON.stringify({code: 0, detail: '登出成功'}));
+        });
     });
 
     app.get('/ser/heartbeat', function (req, res) {
@@ -100,13 +110,23 @@ function loginInit(app) {
     //上传头像
     app.post('/avatar', function (req, res) {
         token.verifyToken(req, res, function (useName) {
-            upload.upload(req,res,function (url) {
+            upload.upload(req, res, function (url) {
                 ds.setAvatar(url, useName, function () {
                     res.send(JSON.stringify({code: 0, avatar: url}));
                 }, function (err) {
                     res.send(JSON.stringify({code: -1, detail: err}));
                 })
             });
+        })
+    });
+
+    //以token获得用户自己的资料
+    app.get('/ser/myinfo', function (req, res) {
+        token.verifyToken(req, res, function (useName) {
+            ds.queryUser(useName, function (result) {
+                var u = result[0];
+                res.send(JSON.stringify(_.extend({code: 0}, {avatar: u.avatar, registertime: u.registertime})));
+            })
         })
     });
 }

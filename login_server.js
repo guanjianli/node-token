@@ -46,6 +46,7 @@ exports.changePasswd = function (name, password, cb, reject) {
         });
 };
 
+
 exports.setAvatar = function (url, name, cb, reject) {
     query.query(
         "update user set avatar = ? where name = ?;",

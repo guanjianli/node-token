@@ -6,7 +6,7 @@ var query = require("./db_conf.js");
 
 exports.queryUser = function (name, cb, reject) {
     query.query(
-        "select * from note where name = ?;",
+        "select * from note where name = ? order by time desc;",
         [name],
         function selectCb(err, results, fields) {
             if (err) {

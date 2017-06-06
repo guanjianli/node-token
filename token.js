@@ -86,18 +86,31 @@ exports.refreshToken = function (req, res) {
             res.send(JSON.stringify({code: -3, detail: '非法refreshToken'}));
         }
     }, function (obj) {
-        if (obj.name && obj.isRefreshtoken) {
-            exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
-                res.send(JSON.stringify(_.extend({code: 0}, data)));
-            });
-        } else {
-            res.send(JSON.stringify({code: -4, detail: '非法使用token, 请使用refreshtoken刷新'}));
-        }
+        //在这里需要检查一下，该refreshtoken是不是还存在于登录表内
+        isExistRefreshToken(req.query.refreshtoken, req, res, function (rToken) {
+            if (obj.name && obj.isRefreshtoken) {
+                exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
+                    res.send(JSON.stringify(_.extend({code: 0}, data)));
+                });
+            } else {
+                res.send(JSON.stringify({code: -4, detail: '非法使用token, 请使用refreshtoken刷新'}));
+            }
+        })
     })
 };
 
 exports.deleteAll = function(name){
   ds.deleteToken(name)
+};
+
+exports.logoutAToken = function(token, res, cb){
+    ds.delAToken(token, function (results) {
+        if (results.affectedRows < 1) {
+            res.send(JSON.stringify({code: -2, detail: '没有对应的token,可能是已退出登录,或者修改了密码'}));
+        } else {
+            cb(results.affectedRows);
+        }
+    })
 };
 
 //一个用户可以保留多个token
@@ -112,7 +125,20 @@ function doSign(obj, time) {
 function getRefreshTokenByToken(token, req, res, cb) {
     ds.queryToken(token, function (results) {
         if (results.length < 1) {
-            res.send(JSON.stringify({code: -2, detail: 'token没有对应的refreshtoken,可能是已退出登录'}));
+            res.send(JSON.stringify({code: -2, detail: 'token没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}));
+        } else {
+            var u = results[0];
+            cb(u.refreshtoken);
+        }
+    }, function (err) {
+        res.send(JSON.stringify({code: -1, err: err}));
+    })
+}
+
+function isExistRefreshToken(rToken, req, res, cb) {
+    ds.isExistRefreshtoken(rToken, function (results) {
+        if (results.length < 1) {
+            res.send(JSON.stringify({code: -2, detail: '没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}));
         } else {
             var u = results[0];
             cb(u.refreshtoken);

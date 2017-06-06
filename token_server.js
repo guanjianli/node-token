@@ -34,17 +34,49 @@ exports.queryToken = function (token, cb, reject) {
     );
 };
 
+exports.isExistRefreshtoken = function (rToken, cb, reject) {
+    query.query(
+        "select * from token where refreshtoken = ?;",
+        [rToken],
+        function selectCb(err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
+            }
+        }
+    );
+};
+
 exports.deleteToken = function (name, cb, reject) {
     query.query(
         "delete from token where name = ?;",
         [name],
         function selectCb(err, results, fields) {
             if (err) {
-               reject && reject(err);
+                reject && reject(err);
                 return;
             }
             if (results) {
                cb && cb(results);
+            }
+        }
+    );
+};
+
+exports.delAToken = function (token, cb, reject) {
+    query.query(
+        "delete from token where token = ?;",
+        [token],
+        function selectCb(err, results, fields) {
+            if (err) {
+                reject && reject(err);
+                return;
+            }
+            if (results) {
+                cb && cb(results);
             }
         }
     );

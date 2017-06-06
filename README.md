@@ -10,6 +10,11 @@
 	要求参数 name password
 	返回:{"code":0,"detail":"登录成功!","avatar":"https://www.liguanjian.com/upload/2615_1495872414712.jpg","token":"G9j0yDhA","refreshtoken":"RcNLdjBA"}
 
+# 登出
+    'https://www.liguanjian.com/ser/logout?token=G9j0yDhA'
+    要求参数 token
+    返回：{"code": 0, "detail": '登出成功'}
+
 # 刷新Token
     'https://www.liguanjian.com/ser/refresh?refreshtoken=5VpIw3MSkg'
     登录时（见上），会返回refreshtoken,只能通过refreshtoken来刷新，请谨慎保存，有必要时加密
@@ -34,6 +39,11 @@
     'https://www.liguanjian.com/avatar?token=eyJhbGciO'
     请求方式不同，是post。request payload夹带图片。
     返回 {"code":0,"avatar":"https://www.liguanjian.com/upload/4380_1495872194532.jpg"}
+
+# 用户信息
+    'https://www.liguanjian.com/ser/myinfo?token=eyJhbGc'
+    param : token
+    返回 {"code":0,"avatar":"https://www.liguanjian.com/upload/3851_1495873268561.jpg","registertime":"2017-05-18 15:45:11"}
 
 # 读取笔记
 	'https://www.liguanjian.com/ser/note?token=5gmlG9j0yDhA'
@@ -60,4 +70,3 @@
     'https://www.liguanjian.com/ser/notestatus?content=hell&id=100&token=eyJhbGci'
     参数 content id
     返回 {"code":0,"detail":"设置笔记内容成功!"}
-	
