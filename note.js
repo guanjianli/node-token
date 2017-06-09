@@ -17,7 +17,7 @@ function noteInit(app) {
     app.get('/ser/addnote', function (req, res) {
         token.verifyToken(req, res, function (name) {
             if (!req.query.note) {
-                res.send(JSON.stringify({code: -15, detail: '参数缺失'}));
+                res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
                 return;
             }
             ds.insertNote(name, req.query.note, req.query.status ? req.query.status : 1, function (results) {
@@ -27,14 +27,14 @@ function noteInit(app) {
                     res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
                 }
             }, function (erro) {
-                res.send(JSON.stringify({code: -11, err: erro}));
+                res.send(JSON.stringify({code: -1, err: erro}));
             })
         })
     });
     app.get('/ser/deletenote', function (req, res) {
         token.verifyToken(req, res, function (name) {
             if (!req.query.ids) {
-                res.send(JSON.stringify({code: -15, detail: '参数缺失'}));
+                res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
                 return;
             } else {
                 ds.deleteNote(name, req.query.ids, function (results) {
@@ -44,7 +44,7 @@ function noteInit(app) {
                         res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
                     }
                 }, function (err) {
-                    res.send(JSON.stringify({code: -11, err: err}));
+                    res.send(JSON.stringify({code: -1, err: err}));
                 })
             }
         })
@@ -52,7 +52,7 @@ function noteInit(app) {
     app.get('/ser/notestatus', function (req, res) {
         token.verifyToken(req, res, function (name) {
             if (!req.query.status || !req.query.id) {
-                res.send(JSON.stringify({code: -15, detail: '参数缺失'}));
+                res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
                 return;
             } else {
                 ds.setStatus(name, req.query.status, req.query.id, function (results) {
@@ -62,7 +62,7 @@ function noteInit(app) {
                         res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
                     }
                 }, function (err) {
-                    res.send(JSON.stringify({code: -11, err: err}));
+                    res.send(JSON.stringify({code: -1, err: err}));
                 })
             }
         })
@@ -70,7 +70,7 @@ function noteInit(app) {
     app.get('/ser/notecontent', function (req, res) {
         token.verifyToken(req, res, function (name) {
             if (!req.query.content || !req.query.id) {
-                res.send(JSON.stringify({code: -15, detail: '参数缺失'}));
+                res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
                 return;
             } else {
                 ds.setContent(name, req.query.content, req.query.id, function (results) {
@@ -80,7 +80,7 @@ function noteInit(app) {
                         res.send(JSON.stringify({code: 0, detail: 'results changedRows 0'}));
                     }
                 }, function (err) {
-                    res.send(JSON.stringify({code: -11, err: err}));
+                    res.send(JSON.stringify({code: -1, err: err}));
                 })
             }
         })

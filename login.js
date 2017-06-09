@@ -46,7 +46,7 @@ function loginInit(app) {
                 ds.insertUser(req.query.name, req.query.password, function () {
                     res.send(JSON.stringify({code: 0, detail: '注册成功'}));
                 }, function (err) {
-                    res.send(JSON.stringify({code: -3, err: err}));
+                    res.send(JSON.stringify({code: -1, err: err}));
                 })
             }
         }, function (err) {
@@ -75,7 +75,7 @@ function loginInit(app) {
                             token.deleteAll(req.query.name);
                             res.send(JSON.stringify({code: 0, detail: '修改密码成功'}));
                         } else {
-                            res.send(JSON.stringify({code: -3, detail: '修改失败，检查用户名与密码'}));
+                            res.send(JSON.stringify({code: -6, detail: '修改失败，检查用户名与密码'}));
                         }
                     }, function (err) {
                         res.send(JSON.stringify({code: -1, err: err}));
@@ -114,7 +114,7 @@ function loginInit(app) {
                 ds.setAvatar(url, useName, function () {
                     res.send(JSON.stringify({code: 0, avatar: url}));
                 }, function (err) {
-                    res.send(JSON.stringify({code: -1, detail: err}));
+                    res.send(JSON.stringify({code: -1, err: err}));
                 })
             });
         })
