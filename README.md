@@ -19,6 +19,7 @@
     要求参数 token
     返回：
     {"code": 0, "detail": '登出成功'}
+    {code: -30, detail: '没有对应的token,可能是已退出登录,或者修改了密码'}
 
 # 刷新Token
     'https://www.liguanjian.com/ser/refresh?refreshtoken=5VpIw3MSkg'
