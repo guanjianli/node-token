@@ -38,62 +38,63 @@ exports.verify = function (token, errCb, done) {
 
 //所有的token来此验证 express
 exports.verifyToken = function (req, res, cb) {
-    if (!req.query.token) {
-        res.send(JSON.stringify({code: -2, detail: 'token缺失'}));
+	var t = req.header('token');
+    if (!t) {
+        res.json({code: -2, detail: 'token缺失'});
         return;
     }
-    exports.verify(req.query.token, function (tips) {
+    exports.verify(t, function (tips) {
         if (tips === 'expired') {
             //如果token过期，再验证refresh是否过期
-            getRefreshTokenByToken(req.query.token, req, res, function (refreshToken) {
+            getRefreshTokenByToken(t, req, res, function (refreshToken) {
                 exports.verify(refreshToken, function (tips) {
                     if (tips === 'expired') {
-                        res.send(JSON.stringify({code: -21, detail: 'token&refreshToken过期，请重新登录'}));
+                        res.json({code: -21, detail: 'token&refreshToken过期，请重新登录'});
                     } else if (tips === 'tokenError') {
-                        res.send(JSON.stringify({code: -22, detail: '验证错误-非法refreshToken'}));
+                        res.json({code: -22, detail: '验证错误-非法refreshToken'});
                     }
                 }, function (obj) {
                     if (obj.name) {
-                        res.send(JSON.stringify({code: -23, detail: 'token已过期(refresh未过期)'}));
+                        res.json({code: -23, detail: 'token已过期(refresh未过期)'});
                     } else {
-                        res.send(JSON.stringify({code: -24, detail: 'refreshToken解析错误'}));
+                        res.json({code: -24, detail: 'refreshToken解析错误'});
                     }
                 })
             })
 
         } else if (tips === 'tokenError') {
-            res.send(JSON.stringify({code: -25, detail: '验证错误-非法token'}));
+            res.json({code: -25, detail: '验证错误-非法token'});
         }
     }, function (obj) {
         if (obj.name && obj.isToken) {
             cb(obj.name);
         } else {
-            res.send(JSON.stringify({code: -26, detail: 'refreshtoken不能代替token使用'}));
+            res.json({code: -26, detail: 'refreshtoken不能代替token使用'});
         }
     })
 };
 
 exports.refreshToken = function (req, res) {
     if (!req.query.refreshtoken) {
-        res.send(JSON.stringify({code: -2, detail: '参数缺失:refreshtoken'}));
+        res.json({code: -2, detail: '参数缺失:refreshtoken'});
         return;
     }
 
     exports.verify(req.query.refreshtoken, function (tips) {
         if (tips === 'expired') {
-            res.send(JSON.stringify({code: -27, detail: 'refreshToken过期'}));
+            res.json({code: -27, detail: 'refreshToken过期'});
         } else if (tips === 'tokenError') {
-            res.send(JSON.stringify({code: -28, detail: '非法refreshToken'}));
+            res.json({code: -28, detail: '非法refreshToken'});
         }
     }, function (obj) {
         //在这里需要检查一下，该refreshtoken是不是还存在于登录表内
         isExistRefreshToken(req.query.refreshtoken, req, res, function (rToken) {
             if (obj.name && obj.isRefreshtoken) {
                 exports.setTokenToMap({name: obj.name, id: obj.id}, function (data) {
-                    res.send(JSON.stringify(_.extend({code: 0}, data)));
+                    res.json(_.extend({code: 0}, data));
                 });
             } else {
-                res.send(JSON.stringify({code: -29, detail: '非法使用token, 请使用refreshtoken刷新'}));
+                res.json({code: -29, detail: '非法使用token, 请使用refreshtoken刷新'});
             }
         })
     })
@@ -106,7 +107,7 @@ exports.deleteAll = function(name){
 exports.logoutAToken = function(token, res, cb){
     ds.delAToken(token, function (results) {
         if (results.affectedRows < 1) {
-            res.send(JSON.stringify({code: -30, detail: '没有对应的token,可能是已退出登录,或者修改了密码'}));
+            res.json({code: -30, detail: '没有对应的token,可能是已退出登录,或者修改了密码'});
         } else {
             cb(results.affectedRows);
         }
@@ -125,26 +126,26 @@ function doSign(obj, time) {
 function getRefreshTokenByToken(token, req, res, cb) {
     ds.queryToken(token, function (results) {
         if (results.length < 1) {
-            res.send(JSON.stringify({code: -31, detail: 'token没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}));
+            res.json({code: -31, detail: 'token没有对应的refreshtoken,可能是已退出登录,或者修改了密码'});
         } else {
             var u = results[0];
             cb(u.refreshtoken);
         }
     }, function (err) {
-        res.send(JSON.stringify({code: -1, err: err}));
+        res.json({code: -1, err: err});
     })
 }
 
 function isExistRefreshToken(rToken, req, res, cb) {
     ds.isExistRefreshtoken(rToken, function (results) {
         if (results.length < 1) {
-            res.send(JSON.stringify({code: -32, detail: '没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}));
+            res.json({code: -32, detail: '没有对应的refreshtoken,可能是已退出登录,或者修改了密码'});
         } else {
             var u = results[0];
             cb(u.refreshtoken);
         }
     }, function (err) {
-        res.send(JSON.stringify({code: -1, err: err}));
+        res.json({code: -1, err: err});
     })
 }
 

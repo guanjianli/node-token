@@ -80,7 +80,7 @@
     返回 {"code":0,"detail":"设置笔记状态成功!"}
 
 # 修改笔记内容
-    'https://www.liguanjian.com/ser/notestatus?content=hell&id=100&token=eyJhbGci'
+    'https://www.liguanjian.com/ser/notecontent?content=hell&id=100&token=eyJhbGci'
     参数 content id
     返回 {"code":0,"detail":"设置笔记内容成功!"}
 
