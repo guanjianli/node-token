@@ -19,6 +19,7 @@
     要求参数 token
     返回：
     {"code": 0, "detail": '登出成功'}
+    {code: -30, detail: '没有对应的token,可能是已退出登录,或者修改了密码'}
 
 # 刷新Token
     'https://www.liguanjian.com/ser/refresh?refreshtoken=5VpIw3MSkg'
@@ -40,6 +41,8 @@
     {code: -24, detail: 'refreshToken解析错误'}
     {code: -25, detail: '验证错误-非法token'}
     {code: -26, detail: 'refreshtoken不能代替token使用'}
+    {code: -31, detail: 'token没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}
+    {code: -32, detail: '没有对应的refreshtoken,可能是已退出登录,或者修改了密码'}
 
 # 修改密码
 	'https://www.liguanjian.com/ser/change?password=lixseex&name=li&oldpassword=li'
