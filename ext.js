@@ -4,6 +4,7 @@ var login = require("./login.js");
 var note = require("./note.js");
 var girl = require("./makepicture.js");
 var tz = require("./timezone.js");
+var douban = require("./douban.js");
 
 
 //设置跨域访问
@@ -45,6 +46,8 @@ girl.init(app);
 
 //时区
 tz.init(app);
+
+app.use('/movie', douban);
 
 //在最后处理404?
 app.use(function (req, res, next) {

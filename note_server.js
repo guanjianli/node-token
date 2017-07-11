@@ -2,7 +2,7 @@
  * Created by liguanjian on 2017-5-18.
  */
 var query = require("./db_conf.js");
-
+var _ = require("underscore");
 
 exports.queryUser = function (name, cb, reject) {
     query.query(
@@ -78,3 +78,16 @@ exports.setContent = function (name, content, id, cb, reject) {
             }
         });
 };
+
+/*----电影Api-----*/
+exports.queryMovie = function (obj, cb) {
+    var pObj = _.pick(obj, 'limit', 'offset');//筛选过键值后的Obj
+    console.log(JSON.stringify(pObj));
+    query.query("select * from movie limit ? offset ?;", [parseInt(pObj.limit), parseInt(pObj.offset)], function (err, results, fields) {
+        if (err) {
+            cb && cb(err);
+            return;
+        }
+        cb && cb(null, results);
+    });
+}
