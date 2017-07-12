@@ -1,9 +1,9 @@
 /**
  * Created by liguanjian on 2017-5-26.
  */
-var query = require("./db_conf.js");
+let db = require("./db_conf.js");
 exports.insertToken = function (name, token, refreshtoken, cb, reject) {
-    query.query(
+    db.execSql(
         "insert into token (name, token, refreshtoken, time) values (?, ?, ?, now());",
         [name, token, refreshtoken],
         function (err, results, fields) {
@@ -19,7 +19,7 @@ exports.insertToken = function (name, token, refreshtoken, cb, reject) {
 };
 
 exports.queryToken = function (token, cb, reject) {
-    query.query(
+    db.execSql(
         "select * from token where token = ?;",
         [token],
         function selectCb(err, results, fields) {
@@ -35,7 +35,7 @@ exports.queryToken = function (token, cb, reject) {
 };
 
 exports.isExistRefreshtoken = function (rToken, cb, reject) {
-    query.query(
+    db.execSql(
         "select * from token where refreshtoken = ?;",
         [rToken],
         function selectCb(err, results, fields) {
@@ -51,7 +51,7 @@ exports.isExistRefreshtoken = function (rToken, cb, reject) {
 };
 
 exports.deleteToken = function (name, cb, reject) {
-    query.query(
+    db.execSql(
         "delete from token where name = ?;",
         [name],
         function selectCb(err, results, fields) {
@@ -67,7 +67,7 @@ exports.deleteToken = function (name, cb, reject) {
 };
 
 exports.delAToken = function (token, cb, reject) {
-    query.query(
+    db.execSql(
         "delete from token where token = ?;",
         [token],
         function selectCb(err, results, fields) {

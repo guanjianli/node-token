@@ -1,7 +1,7 @@
-var query = require("./db_conf.js");
+const db = require("./db_conf.js");
 
 exports.queryUser = function (name, cb, reject) {
-    query.query(
+    db.execSql(
         "select * from user where name = ?;",
         [name],
         function selectCb(err, results, fields) {
@@ -14,10 +14,10 @@ exports.queryUser = function (name, cb, reject) {
             }
         }
     );
-}
+};
 
 exports.insertUser = function (name, password, cb, reject) {
-    query.query(
+    db.execSql(
         "insert into user (name, password, registertime) values (?, ?, now());",
         [name, password],
         function (err, results, fields) {
@@ -29,10 +29,10 @@ exports.insertUser = function (name, password, cb, reject) {
                 cb(results);
             }
         });
-}
+};
 
 exports.changePasswd = function (name, password, cb, reject) {
-    query.query(
+    db.execSql(
         "update user set password = ? where name = ?;",
         [password, name],
         function (err, results, fields) {
@@ -48,7 +48,7 @@ exports.changePasswd = function (name, password, cb, reject) {
 
 
 exports.setAvatar = function (url, name, cb, reject) {
-    query.query(
+    db.execSql(
         "update user set avatar = ? where name = ?;",
         [url, name],
         function (err, results, fields) {

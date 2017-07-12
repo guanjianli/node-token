@@ -15,6 +15,21 @@ CREATE DATABASE IF NOT EXISTS `qdm203823661_db` /*!40100 DEFAULT CHARACTER SET g
 USE `qdm203823661_db`;
 
 
+-- 导出  表 qdm203823661_db.movie 结构
+CREATE TABLE IF NOT EXISTS `movie` (
+  `id` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `info` text NOT NULL,
+  `image` text NOT NULL,
+  `desc` text NOT NULL,
+  `star` text NOT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=gbk COMMENT='豆瓣';
+
+-- 数据导出被取消选择。
+
+
 -- 导出  表 qdm203823661_db.note 结构
 CREATE TABLE IF NOT EXISTS `note` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

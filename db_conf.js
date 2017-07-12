@@ -1,23 +1,31 @@
-var mysql = require('mysql');
+let mysql = require('mysql');
 
-var TEST_DATABASE = 'qdm203823661_db';
-
-var pool = mysql.createPool({
+const option = {
     host: 'qdm203823661.my3w.com',
     user: 'qdm203823661',
     password: 'liguanjian',
-    database: TEST_DATABASE,
+    database: 'qdm203823661_db',
     dateStrings: true,
     multipleStatements: false,
     insecureAuth: true
-});
+};
+let pool;
+let startPool = function () {
+    pool = mysql.createPool(option);
+    pool.on('release', function (connection) {
+        console.log('Connection %d released', connection.threadId);
+    });
+};
 
-var query = function (sql, paras, callback) {
+let execSql = function (sql, params, callback) {
+    if (!pool) startPool();//如果没有开启连接池，就开启,全部不用时，记得释放。
     pool.getConnection(function (err, conn) {
         if (err) {
-            callback(err, null, null);
+            let sta = mysql.format(sql, params);
+            console.log("error sql code : ", sta);
+            callback(err);
         } else {
-            conn.query(sql, paras, function (error, results, fields) {
+            conn.query(sql, params, function (error, results, fields) {
                 conn.release();
                 callback(error, results, fields);
             });
@@ -25,5 +33,28 @@ var query = function (sql, paras, callback) {
     });
 };
 
-exports.query = query;
+/*每次都会建立一个链接*/
+let execSqlOnce = function (sql, params, callback) {
+    let connection = mysql.createConnection(option);
+    connection.connect();
+    connection.query(sql, params, function (err, results, fields) {
+        if (err) {
+            let sta = mysql.format(sql, params);
+            console.log("error sql code : ", sta);
+            callback(err);
+            return;
+        }
+        callback(err, results, fields);
+    });
+    connection.end();
+};
+
+exports.endPool = function () {
+    pool && pool.end(function (err) {
+        console.log("all connections in the pool have ended, pool.getConnection and other operations can no longer be performed")
+    });
+};
+
+exports.execSql = execSql;
 exports.pool = pool;
+exports.execSqlOnce = execSqlOnce;

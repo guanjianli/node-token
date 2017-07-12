@@ -33,3 +33,32 @@ app.post('/upload', function (req, res) {
 
 app.listen(411);
 
+let db = require("./db_conf.js");
+let _ = require("underscore");
+
+exports.queryData = function (obj, cb) {
+    let pObj = _.pick(obj, ['id', 'val']);//筛选过键值后的Obj
+    console.log(JSON.stringify(pObj));
+    db.execSqlOnce("select * from movie order by date desc;", [pObj], function (err, results, fields) {
+        if (err) {
+            cb && cb(err);
+            return;
+        }
+        console.log(results);
+        cb && cb(null, results);
+    });
+};
+exports.insertData = (obj, cb) => {
+    let pObj = _.pick(obj, ['id', 'val']);//筛选过键值后的Obj
+    console.log(JSON.stringify(pObj));
+    db.execSqlOnce("replace into test set ? ;", pObj, (err, results, fields) => {
+        if (err) {
+            cb && cb(err);
+            return;
+        }
+        cb && cb(null, results);
+    });
+};
+
+exports.insertData({id:1, val:17});
+//exports.queryData({id:1,val:7});
