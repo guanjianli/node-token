@@ -38,11 +38,11 @@ app.get("/info", function (req, res) {
 });
 
 //登录逻辑
-app.use("/", login);
+app.use('/', login);
 app.use("/", note);
 
 //奇怪的图片下载
-app.usr("/girl",girl);
+app.use("/girl",girl);
 
 //时区
 app.use("/time", tz);

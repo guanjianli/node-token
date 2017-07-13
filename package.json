@@ -16,6 +16,7 @@
     "jsonwebtoken": "",
     "jsonwebtoken-refresh":"",
     "underscore":"",
-    "async":""
+    "async":"",
+    "formidable":""
   }
 }

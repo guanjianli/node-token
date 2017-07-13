@@ -56,4 +56,4 @@ router.get("/av/*", function (req, res) {
         request.get("https://images.sex.com" + r).pipe(res)
     }
 });
-exports = router;
+module.exports = router;

@@ -8,9 +8,10 @@ var _ = require("underscore");
 var async = require("async");
 var ds = require("./token_server.js");
 
+//这里的fs执行相对路径，是指mainjs的执行路径
 // sign with RSA SHA256
-var priCert = fs.readFileSync('../liguanjian.key');  // get private key
-var pubCert = fs.readFileSync('../liguanjian.pem');  // get public key
+var priCert = fs.readFileSync('./liguanjian.key');  // get private key
+var pubCert = fs.readFileSync('./liguanjian.pem');  // get public key
 
 //对称加密使用HS256,非对称加密使用RS256
 //如果使用HS256，使用相同的private key加密，解密

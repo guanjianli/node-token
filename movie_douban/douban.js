@@ -4,7 +4,7 @@
 
 var express = require('express');
 var router = express.Router();
-var ser = require("./note/note_server.js");
+var ser = require("../note/note_server.js");
 var _ = require("underscore");
 
 router.get('/', function (req, res) {
@@ -24,7 +24,6 @@ router.get('/list', function (req, res) {
             res.json({code: 0, data: results});
         })
     }
-
 });
 
 module.exports = router;

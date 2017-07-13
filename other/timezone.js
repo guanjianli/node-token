@@ -13,7 +13,7 @@ var getCity = function () {
     var val = obj[key];
     //console.log(val[1])
     return val[1];
-}
+};
 
 
 //express 部分
@@ -23,4 +23,4 @@ router.get("/", function (req, res) {
     res.send(getCity());
 });
 
-exports = router;
+module.exports = router;

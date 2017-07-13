@@ -8,7 +8,6 @@ var _ = require("underscore");
 var upload = require("../util/imageupload");
 var router = require("express").Router();
 
-
 router.get('/ser/login', function (req, res) {
     if (!req.query.name || !req.query.password) {
         res.json({code: -2, detail: '没有输入帐号或密码'});
@@ -130,4 +129,4 @@ router.get('/ser/myinfo', function (req, res) {
 });
 
 
-exports = router;
+module.exports = router;

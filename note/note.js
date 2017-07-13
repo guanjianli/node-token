@@ -87,4 +87,4 @@ router.get('/ser/notecontent', function (req, res) {
 });
 
 
-exports = router;
+module.exports = router;
