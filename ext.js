@@ -1,10 +1,10 @@
 var express = require('express');
 var app = express();
-var login = require("./login.js");
-var note = require("./note.js");
-var girl = require("./makepicture.js");
-var tz = require("./timezone.js");
-var douban = require("./douban.js");
+var login = require("./login/login.js");
+var note = require("./note/note.js");
+var girl = require("./other/makepicture.js");
+var tz = require("./other/timezone.js");
+var douban = require("./movie_douban/douban.js");
 
 
 //设置跨域访问
@@ -38,15 +38,14 @@ app.get("/info", function (req, res) {
 });
 
 //登录逻辑
-login.loginInit(app);
-note.noteInit(app);
+app.use("/", login);
+app.use("/", note);
 
 //奇怪的图片下载
-girl.init(app);
+app.usr("/girl",girl);
 
 //时区
-tz.init(app);
-
+app.use("/time", tz);
 app.use('/movie', douban);
 
 //在最后处理404?

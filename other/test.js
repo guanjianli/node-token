@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var upload = require("./imageupload");
+var upload = require("../util/imageupload");
 
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

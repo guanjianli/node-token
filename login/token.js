@@ -9,8 +9,8 @@ var async = require("async");
 var ds = require("./token_server.js");
 
 // sign with RSA SHA256
-var priCert = fs.readFileSync('./liguanjian.key');  // get private key
-var pubCert = fs.readFileSync('./liguanjian.pem');  // get public key
+var priCert = fs.readFileSync('../liguanjian.key');  // get private key
+var pubCert = fs.readFileSync('../liguanjian.pem');  // get public key
 
 //对称加密使用HS256,非对称加密使用RS256
 //如果使用HS256，使用相同的private key加密，解密
@@ -162,4 +162,4 @@ exports.setTokenToMap = function (obj, cb) {
         ds.insertToken(obj.name, results[0], results[1]);
         cb({id: obj.id, token: results[0], refreshtoken: results[1]});
     });
-}
+};

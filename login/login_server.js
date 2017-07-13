@@ -1,4 +1,4 @@
-const db = require("./db_conf.js");
+const db = require("../util/db_conf.js");
 
 exports.queryUser = function (name, cb, reject) {
     db.execSql(

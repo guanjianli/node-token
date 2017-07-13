@@ -1,7 +1,7 @@
 /**
  * Created by liguanjian on 2017-5-26.
  */
-let db = require("./db_conf.js");
+let db = require("../util/db_conf.js");
 exports.insertToken = function (name, token, refreshtoken, cb, reject) {
     db.execSql(
         "insert into token (name, token, refreshtoken, time) values (?, ?, ?, now());",

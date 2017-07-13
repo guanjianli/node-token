@@ -1,7 +1,7 @@
 /**
  * Created by liguanjian on 2017-5-18.
  */
-const db = require("./db_conf.js");
+const db = require("../util/db_conf.js");
 const _ = require("underscore");
 
 exports.queryUser = function (name, cb, reject) {
@@ -77,17 +77,4 @@ exports.setContent = function (name, content, id, cb, reject) {
                 cb && cb(results);
             }
         });
-};
-
-/*----电影Api-----*/
-exports.queryMovie = function (obj, cb) {
-    let pObj = _.pick(obj, 'limit', 'offset');//筛选过键值后的Obj
-    console.log(JSON.stringify(pObj));
-    db.execSql("select * from movie order by date desc limit ? offset ? ", [parseInt(pObj.limit), parseInt(pObj.offset)], function (err, results, fields) {
-        if (err) {
-            cb && cb(err);
-            return;
-        }
-        cb && cb(null, results);
-    });
 };

@@ -4,7 +4,7 @@
 
 var express = require('express');
 var router = express.Router();
-var ser = require("./note_server.js");
+var ser = require("./note/note_server.js");
 var _ = require("underscore");
 
 router.get('/', function (req, res) {
