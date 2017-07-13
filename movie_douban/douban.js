@@ -4,7 +4,7 @@
 
 var express = require('express');
 var router = express.Router();
-var ser = require("../note/note_server.js");
+var ds = require("./douban_server.js");
 var _ = require("underscore");
 
 router.get('/', function (req, res) {
@@ -16,7 +16,7 @@ router.get('/list', function (req, res) {
         res.json({code: -2, detail: 'limit offset参数缺失'});
         return;
     }else {
-        ser.queryMovie({limit:req.query.limit, offset:req.query.offset}, function (err, results) {
+        ds.queryMovie({limit:req.query.limit, offset:req.query.offset}, function (err, results) {
             if(err){
                 res.json(_.extend({code: -1001}, {err:err}));
                 return;

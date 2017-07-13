@@ -41,8 +41,8 @@ app.get("/info", function (req, res) {
 app.use('/', login);
 app.use("/", note);
 
-//奇怪的图片下载
-app.use("/girl",girl);
+//奇怪的图片下载 境内禁止
+//app.use("/",girl);
 
 //时区
 app.use("/time", tz);

@@ -19,6 +19,6 @@ function startServer(){
         server = startServer();
     });
     return server;
-};
+}
 
 startServer();
