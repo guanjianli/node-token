@@ -6,14 +6,15 @@ const _ = require("underscore");
 const async = require("async");
 const ds = require("./douban_server.js");
 
+var filePath = './done.json'
 //先读旧的文件
-var oldList = JSON.parse(fs.readFileSync('done.json', 'utf8'));
+var oldList = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
 var getMovieUrl = function(cb){
     
     request('https://movie.douban.com/', function (error, response, body) {
 	  if(error){console.log(error);return;}
-      if(response.statusCode != 200) console.log('statusCode:', response && response.statusCode, url); 
+      if(response.statusCode != 200) console.log('statusCode:', response && response.statusCode); 
 	  if(body){		
 		  //const $ = cheerio.load(body);
           var m = body.match(/https[^http]+subject\/\d+\//g);
@@ -42,7 +43,7 @@ var handleDiff = (difMap)=>{
 			return;
 		}
 		//如中途出错，数据库更新，但是不写入done文件
-		fs.writeFileSync('done.json', JSON.stringify(_.uniq(oldList)));
+		fs.writeFileSync(filePath, JSON.stringify(_.uniq(oldList)));
     });
 }
 

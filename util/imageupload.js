@@ -49,3 +49,21 @@ exports.upload = function(req, res, cb) {
         }
     });
 };
+
+exports.anyFileUpload = function(req, res, cb) {
+    var form = new formidable.IncomingForm(); //创建上传表单
+    form.encoding = 'utf-8'; //设置编辑
+    form.uploadDir = '/root/ser/public/update/'; //设置上传目录
+    form.keepExtensions = true; //保留后缀
+    form.maxFieldsSize = 2 * 1024 * 1024; //文件大小
+    form.type = true;
+    form.parse(req, function(err, fields, files) {
+        if (err) {
+            res.send(err);
+            return;
+        }
+        //path.match(/[^\/]*\..+/g)[0]
+        fs.renameSync(files.fileUp.path, form.uploadDir + files.fileUp.name); //重命名
+        cb("https://www.liguanjian.com/update/" + files.fileUp.name);
+    });
+};

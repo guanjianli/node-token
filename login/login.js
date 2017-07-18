@@ -118,6 +118,13 @@ router.post('/avatar', function (req, res) {
     })
 });
 
+//上传任意文件
+router.post('/appupdate', function (req, res) {
+    upload.anyFileUpload(req, res, function (url) {
+        res.json({code: 0, url: url});
+    });
+});
+
 //以token获得用户自己的资料
 router.get('/ser/myinfo', function (req, res) {
     token.verifyToken(req, res, function (useName) {
