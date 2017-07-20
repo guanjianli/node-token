@@ -161,6 +161,6 @@ exports.setTokenToMap = function (obj, cb) {
         // all item callback
         //将token&refreshtoken信息存储至数据库
         ds.insertToken(obj.name, results[0], results[1]);
-        cb({id: obj.id, token: results[0], refreshtoken: results[1]});
+        cb({tid: obj.id, token: results[0], refreshtoken: results[1]});
     });
 };

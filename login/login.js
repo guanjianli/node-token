@@ -24,7 +24,7 @@ router.get('/ser/login', function (req, res) {
                 //todo 限制下次登录时间，不可以连续暴力刷新
             } else {
                 token.setTokenToMap({name: req.query.name}, function (data) {
-                    res.json(_.extend({code: 0}, {avatar: u.avatar, viplv: u.vip}, data));
+                    res.json(_.extend({code: 0}, {uid: u.id, avatar: u.avatar, viplv: u.vip}, data));
                 })
             }
         }
@@ -126,14 +126,30 @@ router.post('/appupdate', function (req, res) {
 });
 
 //以token获得用户自己的资料
-router.get('/ser/myinfo', function (req, res) {
+router.get('/user/myinfo', function (req, res) {
     token.verifyToken(req, res, function (useName) {
         ds.queryUser(useName, function (result) {
-            var u = result[0];
+            let u = result[0];
             res.json(_.extend({code: 0}, {avatar: u.avatar, registertime: u.registertime, viplv: u.vip}));
         })
     })
 });
 
+//通过id，获得他人的信息
+router.get('/user/info', function (req, res) {
+    let useName = req.query.name;
+    if (!id) {
+        res.json({code: -2, detail: '参数缺失 name miss'});
+        return;
+    }
+    ds.queryUser(useName, function (result) {
+        let u = result[0];
+        if(u){
+            res.json(_.extend({code: 0}, _.pick(u, ['id', 'name', 'avatar'])));
+        }else {
+            res.json({code: -4, detail: '用户不存在'});
+        }
+    })
+});
 
 module.exports = router;

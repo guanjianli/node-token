@@ -11,7 +11,6 @@ var filePath = './done.json'
 var oldList = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
 var getMovieUrl = function(cb){
-    
     request('https://movie.douban.com/', function (error, response, body) {
 	  if(error){console.log(error);return;}
       if(response.statusCode != 200) console.log('statusCode:', response && response.statusCode); 

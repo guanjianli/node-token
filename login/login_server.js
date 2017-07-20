@@ -1,4 +1,5 @@
 const db = require("../util/db_conf.js");
+const _ = require("underscore");
 
 exports.queryUser = function (name, cb, reject) {
     db.execSql(
