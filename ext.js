@@ -1,11 +1,11 @@
-var express = require('express');
-var app = express();
-var login = require("./login/login.js");
-var note = require("./note/note.js");
-var girl = require("./other/makepicture.js");
-var tz = require("./other/timezone.js");
-var douban = require("./movie_douban/douban.js");
-
+let express = require('express');
+let app = express();
+let login = require("./login/login.js");
+let note = require("./note/note.js");
+let girl = require("./other/makepicture.js");
+let tz = require("./other/timezone.js");
+let douban = require("./movie_douban/douban.js");
+let comment = require("./comment/comment.js");
 
 //设置跨域访问
 app.all('/ser/*', function (req, res, next) {
@@ -48,17 +48,20 @@ app.use("/", note);
 app.use("/time", tz);
 app.use('/movie', douban);
 
+//评论
+app.use("comment", comment);
+
 //在最后处理404?
 app.use(function (req, res, next) {
-    var err = new Error('404 Not Found');
+    let err = new Error('404 Not Found');
     err['status'] = 404;
     next(err);
 });
 
 //https
-var https = require('https');
-var fs = require("fs");
-var options = {
+let https = require('https');
+let fs = require("fs");
+let options = {
     key: fs.readFileSync('./liguanjian.key'),
     cert: fs.readFileSync('./liguanjian.pem')
 };
