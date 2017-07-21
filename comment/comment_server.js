@@ -3,6 +3,7 @@ let _ = require("underscore");
 
 class Comment {
     insertComment(obj, cb) {
+		console.log("app send to me subjectid", obj.subjectid);
         let pObj = _.pick(obj, ['appid', 'parentid', 'content', 'subjectid', 'star', 'username']);//筛选过键值后的Obj
         pObj.time = new Date();
         db.execSqlOnce("replace into comment set ? ;", pObj, (err, results, fields) => {
