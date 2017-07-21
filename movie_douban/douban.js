@@ -2,10 +2,10 @@
  * Created by liguanjian on 2017-7-11.
  */
 
-var express = require('express');
-var router = express.Router();
-var ds = require("./douban_server.js");
-var _ = require("underscore");
+let express = require('express');
+let router = express.Router();
+let ds = require("./douban_server.js");
+let _ = require("underscore");
 
 router.get('/', function (req, res) {
     res.send('welcome to movie');
@@ -14,7 +14,6 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     if (!req.query.limit || !req.query.offset) {
         res.json({code: -2, detail: 'limit offset参数缺失'});
-        return;
     }else {
         ds.queryMovie({limit:req.query.limit, offset:req.query.offset}, function (err, results) {
             if(err){

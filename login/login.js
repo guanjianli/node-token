@@ -138,7 +138,7 @@ router.get('/user/myinfo', function (req, res) {
 //通过id，获得他人的信息
 router.get('/user/info', function (req, res) {
     let useName = req.query.name;
-    if (!id) {
+    if (!useName) {
         res.json({code: -2, detail: '参数缺失 name miss'});
         return;
     }

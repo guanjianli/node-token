@@ -107,6 +107,11 @@
 	要求参数 ids,数组，逗号分隔。需要token
 	{"code":0,"detail":"删除评论成功!"}
 
+# 取得他人资料
+	'https://www.liguanjian.com/user/info?name=li'
+	要求参数 name 不需要token。
+	{"code":0,"id":3,"name":"li","avatar":"https://www.liguanjian.com/upload/2940_1496287580382.jpg"}
+
 # 所有错误码
 
 ##### 通用错误码
