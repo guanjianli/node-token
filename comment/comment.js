@@ -13,10 +13,11 @@ router.get('/', function (req, res) {
 });
 
 router.get('/add', function (req, res) {
-    if (!req.query.content || !req.query.appid) {
+	/*
+    if (!req.query.appid) {
         res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
         return;
-    }
+    }*/
     token.verifyToken(req, res, function (userName) {
         ds.insertComment(_.extend({}, req.query, {username: userName}), function (error, results) {
             if (error) res.send(JSON.stringify({code: -1, err: error}));
