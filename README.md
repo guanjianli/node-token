@@ -87,6 +87,26 @@
     参数 content id
     返回 {"code":0,"detail":"设置笔记内容成功!"}
 
+# 获得评论
+	'https://www.liguanjian.com/comment/get?ids=1,2'
+	要求参数 ids,数组，逗号分隔。不需要token
+	返回字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username']
+
+# 插入评论
+	'https://www.liguanjian.com/comment/add?appid=1&subjectid=25363&content=%E5%A5%BD%E5%B7%AE%E9%B8%A1&star=1'
+	要求参数，所有参数均不是必须。
+	appid App的ID
+	subjectid 文章，或者电影的ID
+	parentid 父节点ID，一般用作楼中楼
+	content 内容
+	star 星级
+	返回:{code: 0, detail: '插入评论成功!'}
+
+# 删除评论
+	'https://www.liguanjian.com/comment/del?ids=1,9'
+	要求参数 ids,数组，逗号分隔。不需要token
+	{"code":0,"detail":"删除评论成功!"}
+
 # 所有错误码
 
 ##### 通用错误码
