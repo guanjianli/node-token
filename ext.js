@@ -49,7 +49,7 @@ app.use("/time", tz);
 app.use('/movie', douban);
 
 //评论
-app.use("comment", comment);
+app.use("/comment", comment);
 
 //在最后处理404?
 app.use(function (req, res, next) {

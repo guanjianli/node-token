@@ -53,11 +53,7 @@ router.get('/get', function (req, res) {
     }
     ds.queryCommentByList(req.query.ids, function (error, results) {
         if (error) res.send(JSON.stringify({code: -1, err: error}));
-        if (results.affectedRows >= 1) {
-            res.send(JSON.stringify({code: 0, data: results}));
-        } else {
-            res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
-        }
+        res.send(JSON.stringify({code: 0, data: results}));
     })
 
 });
