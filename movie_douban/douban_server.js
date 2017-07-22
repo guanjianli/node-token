@@ -4,6 +4,7 @@ var _ = require("underscore");
 exports.insertMovie = (obj, cb) => {
 	var pObj = _.pick(obj, 'id', 'name', 'info', 'image', 'desc', 'star', 'date');//筛选过键值后的Obj
 	console.log(JSON.stringify(pObj));
+	pObj.gaintime = new Date();
 	db.execSqlOnce("replace into movie set ? ;" , pObj, (err, results, fields)=> {
 		if (err) {
 			console.log("DB Error :" + err);
@@ -23,6 +24,7 @@ exports.queryMovie = function (obj, cb) {
             cb && cb(err);
             return;
         }
-        cb && cb(null, results);
+		let filterData = _.map(results, function(it){return _.omit(it, 'gaintime')});
+        cb && cb(null, filterData);
     });
 };
