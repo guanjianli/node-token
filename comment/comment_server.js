@@ -34,9 +34,9 @@ class Comment {
     }
 
     queryCommentByList(ids, cb) {
-        console.log("sql", "select * from comment where id in (" + ids + ");")
+		let sql = "select comment.*, user.avatar from  comment, user where user.name = comment.name and comment.id in (" + ids + ");";
         db.execSql(
-            "select * from comment where id in (" + ids + ");",
+            sql,
             function selectCb(err, results, fields) {
                 if (err) {
                     cb && cb(err);
@@ -47,9 +47,9 @@ class Comment {
         );
     }
 
-    deleteComment(useName, ids, cb) {
+    deleteComment(name, ids, cb) {
         db.execSql(
-            'delete from comment where id in (' + ids + ') and username = "' + useName + '";',
+            'delete from comment where id in (' + ids + ') and name = "' + name + '";',
             function (err, results, fields) {
                 if (err) {
                     cb && cb(err);
@@ -58,6 +58,22 @@ class Comment {
                 cb && cb(null, results);
             });
     }
+	
+	getCommentOfBook(obj, cb){
+		let sql = "select comment.*, user.avatar from  comment, user where user.name = comment.name and comment.subjectid = ? limit ? offset ?;";
+		console.log(sql)
+        db.execSql(
+            sql,
+			[obj.subjectid, parseInt(obj.limit), parseInt(obj.offset)],
+            function selectCb(err, results, fields) {
+                if (err) {
+                    cb && cb(err);
+                    return;
+                }
+                cb && cb(null, results);
+            }
+        );
+	}
 }
 
 module.exports = new Comment();

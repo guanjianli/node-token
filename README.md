@@ -90,7 +90,12 @@
 # 获得评论
 	'https://www.liguanjian.com/comment/get?ids=1,2'
 	要求参数 ids,数组，逗号分隔。不需要token
-	返回字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username']
+	返回字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar']
+	
+# 获得影评
+	'https://www.liguanjian.com/comment/movie?subjectid=26705107&limit=3&offset=0'
+	要求参数 subjectid , offset, limit。不需要token
+	返回数组，包含字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar']
 
 # 插入评论
 	'https://www.liguanjian.com/comment/add?appid=1&subjectid=25363&content=%E5%A5%BD%E5%B7%AE%E9%B8%A1&star=1'
