@@ -4,7 +4,7 @@ let _ = require("underscore");
 class Comment {
     insertComment(obj, cb) {
 		console.log("app send to me subjectid", obj.subjectid);
-        let pObj = _.pick(obj, ['appid', 'parentid', 'content', 'subjectid', 'star', 'username']);//筛选过键值后的Obj
+        let pObj = _.pick(obj, ['appid', 'parentid', 'content', 'subjectid', 'star', 'name']);//筛选过键值后的Obj
         pObj.time = new Date();
         db.execSqlOnce("replace into comment set ? ;", pObj, (err, results, fields) => {
             if (err) {
@@ -34,7 +34,7 @@ class Comment {
     }
 
     queryCommentByList(ids, cb) {
-		let sql = "select comment.*, user.avatar from  comment, user where user.name = comment.name and comment.id in (" + ids + ");";
+		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.id in (" + ids + ");";
         db.execSql(
             sql,
             function selectCb(err, results, fields) {
@@ -60,8 +60,7 @@ class Comment {
     }
 	
 	getCommentOfBook(obj, cb){
-		let sql = "select comment.*, user.avatar from  comment, user where user.name = comment.name and comment.subjectid = ? limit ? offset ?;";
-		console.log(sql)
+		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.subjectid = ? limit ? offset ?;";
         db.execSql(
             sql,
 			[obj.subjectid, parseInt(obj.limit), parseInt(obj.offset)],

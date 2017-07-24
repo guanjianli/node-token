@@ -10,7 +10,7 @@
     'https://www.liguanjian.com/ser/login?name=li&password=li'
 	要求参数 name password
 	返回:
-	{"code":0,"detail":"登录成功!","avatar":"https://www.liguanjian.com/upload/2615_1495872414712.jpg","token":"G9j0yDhA","refreshtoken":"RcNLdjBA"}
+	{"code":0,"detail":"登录成功!","avatar":"https://www.liguanjian.com/upload/2615_1495872414712.jpg","token":"G9j0yDhA","refreshtoken":"RcNLdjBA", "uid":1}
 	{code: -3, detail: '密码错误'}
     {code: -4, detail: '用户不存在'}
 
@@ -113,9 +113,9 @@
 	{"code":0,"detail":"删除评论成功!"}
 
 # 取得他人资料
-	'https://www.liguanjian.com/user/info?name=li'
-	要求参数 name 不需要token。
-	{"code":0,"id":3,"name":"li","avatar":"https://www.liguanjian.com/upload/2940_1496287580382.jpg"}
+	'https://www.liguanjian.com/user/info?uid=3'
+	要求参数 uid 不需要token。
+	{"code":0,"name":"li","avatar":"https://www.liguanjian.com/upload/2940_1496287580382.jpg","vip":0}
 
 # 所有错误码
 

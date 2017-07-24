@@ -17,6 +17,22 @@ exports.queryUser = function (name, cb, reject) {
     );
 };
 
+exports.queryUserByID = function (id, cb) {
+    db.execSql(
+        "select * from user where id = ?;",
+        [id],
+        function selectCb(err, results, fields) {
+            if (err) {
+                cb(err);
+                return;
+            }
+            if (results) {
+                cb(null, results);
+            }
+        }
+    );
+};
+
 exports.insertUser = function (name, password, cb, reject) {
     db.execSql(
         "insert into user (name, password, registertime) values (?, ?, now());",

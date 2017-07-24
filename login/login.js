@@ -137,15 +137,16 @@ router.get('/user/myinfo', function (req, res) {
 
 //通过id，获得他人的信息
 router.get('/user/info', function (req, res) {
-    let useName = req.query.name;
-    if (!useName) {
+    let uid = req.query.uid;
+    if (!uid) {
         res.json({code: -2, detail: '参数缺失 name miss'});
         return;
     }
-    ds.queryUser(useName, function (result) {
+    ds.queryUserByID(uid, function (error, result) {
+
         let u = result[0];
         if(u){
-            res.json(_.extend({code: 0}, _.pick(u, ['id', 'name', 'avatar'])));
+            res.json(_.extend({code: 0}, _.pick(u, ['name', 'avatar', 'vip'])));
         }else {
             res.json({code: -4, detail: '用户不存在'});
         }
