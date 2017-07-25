@@ -6,7 +6,7 @@ const option = {
     password: 'liguanjian',
     database: 'qdm203823661_db',
     dateStrings: true,
-    multipleStatements: false,
+    multipleStatements: true,
     insecureAuth: true
 };
 let pool;

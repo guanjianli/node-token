@@ -21,8 +21,8 @@ router.get('/add', function (req, res) {
     token.verifyToken(req, res, function (name) {
         ds.insertComment(_.extend({}, req.query, {name: name}), function (error, results) {
             if (error) res.send(JSON.stringify({code: -1, err: error}));
-            if (results.affectedRows >= 1) {
-                res.send(JSON.stringify({code: 0, detail: '插入评论成功!'}));
+            if (results[0].affectedRows >= 1) {
+                res.send(JSON.stringify(_.extend({code: 0, detail: '插入评论成功!'}, {obj:results[1][0]})));
             } else {
                 res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
             }

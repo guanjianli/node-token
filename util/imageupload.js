@@ -19,7 +19,7 @@ exports.upload = function(req, res, cb) {
             return;
         }
         var extName = ''; //后缀名
-        console.log(JSON.stringify(files))
+        //console.log(JSON.stringify(files))
         switch (files.fileUp.type) {
             case 'image/pjpeg':
                 extName = 'jpg';

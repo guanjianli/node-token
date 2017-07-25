@@ -3,15 +3,15 @@ let _ = require("underscore");
 
 class Comment {
     insertComment(obj, cb) {
-		console.log("app send to me subjectid", obj.subjectid);
         let pObj = _.pick(obj, ['appid', 'parentid', 'content', 'subjectid', 'star', 'name']);//筛选过键值后的Obj
         pObj.time = new Date();
-        db.execSqlOnce("replace into comment set ? ;", pObj, (err, results, fields) => {
+        db.execSqlOnce("replace into comment set ? ;select * from comment where id = @@identity ;", pObj, (err, results, fields) => {
             if (err) {
                 console.log("DB Error :" + err);
                 cb && cb(err);
                 return;
             }
+
             cb && cb(null, results);
         });
     }
@@ -34,7 +34,7 @@ class Comment {
     }
 
     queryCommentByList(ids, cb) {
-		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.id in (" + ids + ");";
+		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.id in (" + ids + ") order by time desc;";
         db.execSql(
             sql,
             function selectCb(err, results, fields) {
@@ -60,7 +60,7 @@ class Comment {
     }
 	
 	getCommentOfBook(obj, cb){
-		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.subjectid = ? limit ? offset ?;";
+		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
         db.execSql(
             sql,
 			[obj.subjectid, parseInt(obj.limit), parseInt(obj.offset)],
@@ -69,6 +69,7 @@ class Comment {
                     cb && cb(err);
                     return;
                 }
+
                 cb && cb(null, results);
             }
         );
