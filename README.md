@@ -95,7 +95,12 @@
 # 获得影评
 	'https://www.liguanjian.com/comment/movie?subjectid=26705107&limit=3&offset=0'
 	要求参数 subjectid , offset, limit。不需要token
-	返回数组，包含字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar']
+	返回数组，包含字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar', 'islike']
+
+# 点赞
+	'https://www.liguanjian.com/comment/like?commentid=65&uid=5&islike=1'
+	要求参数 commentid, uid, islike**<0或者1>** ,非要求参数 subjectid 。需要token。
+	返回{code: 0, detail: '成功!'}
 
 # 插入评论
 	'https://www.liguanjian.com/comment/add?appid=1&subjectid=25363&content=%E5%A5%BD%E5%B7%AE%E9%B8%A1&star=1'

@@ -34,7 +34,7 @@ class Comment {
     }
 
     queryCommentByList(ids, cb) {
-		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.id in (" + ids + ") order by time desc;";
+        let sql = "select comment.*, user.avatar, user.id as uid, love.islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.id in (" + ids + ") order by time desc;";
         db.execSql(
             sql,
             function selectCb(err, results, fields) {
@@ -60,7 +60,7 @@ class Comment {
     }
 	
 	getCommentOfBook(obj, cb){
-		let sql = "select comment.*, user.avatar, user.id as uid from  comment, user where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
+		let sql = "select comment.*, user.avatar, user.id as uid, love.islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
         db.execSql(
             sql,
 			[obj.subjectid, parseInt(obj.limit), parseInt(obj.offset)],
@@ -74,6 +74,20 @@ class Comment {
             }
         );
 	}
+
+    insertLike(obj, cb) {
+        let pObj = _.pick(obj, ['commentid', 'subjectid', 'uid', 'islike']);//筛选过键值后的Obj
+        pObj.time = new Date();
+        db.execSqlOnce("replace into love set ? ;", pObj, (err, results, fields) => {
+            if (err) {
+                console.log("DB Error :" + err);
+                cb && cb(err);
+                return;
+            }
+
+            cb && cb(null, results);
+        });
+    }
 }
 
 module.exports = new Comment();
