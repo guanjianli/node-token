@@ -16,40 +16,11 @@ class Comment {
         });
     }
 
-    queryComment(obj, cb) {
-        let p = _.map(obj, (v, k) => {
-            return (k + ' = "' + v + '"')
-        }).join(" and ");
-        db.execSql(
-            "select * from comment where ?;",
-            [p],
-            function selectCb(err, results, fields) {
-                if (err) {
-                    cb && cb(err);
-                    return;
-                }
-                cb && cb(null, results);
-            }
-        );
-    }
-
-    queryCommentByList(ids, cb) {
-        let sql = "select comment.*, user.avatar, user.id as uid, love.islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.id in (" + ids + ") order by time desc;";
-        db.execSql(
-            sql,
-            function selectCb(err, results, fields) {
-                if (err) {
-                    cb && cb(err);
-                    return;
-                }
-                cb && cb(null, results);
-            }
-        );
-    }
-
     deleteComment(name, ids, cb) {
+        //在些过滤一下邪恶的输入
+        let idArr = _.compact(_.map(ids.split(','), (i)=>{return parseInt(i)})).toString();
         db.execSql(
-            'delete from comment where id in (' + ids + ') and name = "' + name + '";',
+            'delete from comment where id in (' + idArr + ') and name = "' + name + '";',
             function (err, results, fields) {
                 if (err) {
                     cb && cb(err);
@@ -58,7 +29,7 @@ class Comment {
                 cb && cb(null, results);
             });
     }
-	
+
 	getCommentOfBook(obj, cb){
 		let sql = "select comment.*, user.avatar, user.id as uid, love.islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
         db.execSql(

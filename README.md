@@ -87,19 +87,14 @@
     参数 content id
     返回 {"code":0,"detail":"设置笔记内容成功!"}
 
-# 获得评论
-	'https://www.liguanjian.com/comment/get?ids=1,2'
-	要求参数 ids,数组，逗号分隔。不需要token
-	返回字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar']
-	
 # 获得影评
 	'https://www.liguanjian.com/comment/movie?subjectid=26705107&limit=3&offset=0'
 	要求参数 subjectid , offset, limit。不需要token
-	返回数组，包含字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'username', 'avatar', 'islike']
+	返回数组，包含字段 - ['appid', 'parentid', 'content', 'subjectid', 'star', 'name', 'avatar', 'islike', 'uid']
 
 # 点赞
-	'https://www.liguanjian.com/comment/like?commentid=65&uid=5&islike=1'
-	要求参数 commentid, uid, islike**<0或者1>** ,非要求参数 subjectid 。需要token。
+	'https://www.liguanjian.com/comment/like?commentid=65&islike=1'
+	要求参数 commentid, islike->0或者1 ,非要求参数 subjectid 。需要token。
 	返回{code: 0, detail: '成功!'}
 
 # 插入评论

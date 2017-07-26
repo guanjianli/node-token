@@ -71,15 +71,16 @@ router.get('/movie', function (req, res) {
 });
 
 router.get('/like', function (req, res) {
-    //todo,添加uid到token
-    if (!req.query.commentid || !req.query.uid || !req.query.islike) {
+    if (!req.query.commentid || !req.query.islike) {
         res.json({code: -2, detail: '参数缺失'});
         return;
     }
-    ds.insertLike(req.query, function (error, results) {
-        if (error) res.json({code: -1, err: error});
-        res.json({code: 0, detail: '成功!'});
-    })
+    token.verifyToken(req, res, function (name, uid) {
+        ds.insertLike(_.extend({},req.query, {uid:uid}), function (error, results) {
+            if (error) res.json({code: -1, err: error});
+            res.json({code: 0, detail: '成功!'});
+        })
+    });
 });
 
 module.exports = router;

@@ -23,7 +23,7 @@ router.get('/ser/login', function (req, res) {
                 res.json({code: -3, detail: '密码错误'});
                 //todo 限制下次登录时间，不可以连续暴力刷新
             } else {
-                token.setTokenToMap({name: req.query.name}, function (data) {
+                token.setTokenToMap({name: req.query.name, uid:u.id}, function (data) {
                     res.json(_.extend({code: 0}, {uid: u.id, avatar: u.avatar, viplv: u.vip}, data));
                 })
             }

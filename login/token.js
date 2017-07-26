@@ -39,7 +39,7 @@ exports.verify = function (token, errCb, done) {
 
 //所有的token来此验证 express
 exports.verifyToken = function (req, res, cb) {
-	var t = req.header('token');
+	let t = req.header('token');
     if (!t) {
         res.json({code: -2, detail: 'token缺失'});
         return;
@@ -68,7 +68,8 @@ exports.verifyToken = function (req, res, cb) {
         }
     }, function (obj) {
         if (obj.name && obj.isToken) {
-            cb(obj.name);
+            //第一个是name，第二个是uid
+            cb(obj.name, obj.uid);
         } else {
             res.json({code: -26, detail: 'refreshtoken不能代替token使用'});
         }
@@ -151,7 +152,7 @@ function isExistRefreshToken(rToken, req, res, cb) {
 }
 
 exports.setTokenToMap = function (obj, cb) {
-    obj.id = obj.id || _.uniqueId('token');
+    obj.tid = obj.tid || _.uniqueId('token');
     async.parallel([
         //token
         doSign(_.extend({}, obj, {isToken: true}), "2h"),
@@ -161,6 +162,6 @@ exports.setTokenToMap = function (obj, cb) {
         // all item callback
         //将token&refreshtoken信息存储至数据库
         ds.insertToken(obj.name, results[0], results[1]);
-        cb({tid: obj.id, token: results[0], refreshtoken: results[1]});
+        cb({tid: obj.tid, token: results[0], refreshtoken: results[1]});
     });
 };
