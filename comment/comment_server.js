@@ -31,7 +31,7 @@ class Comment {
     }
 
 	getCommentOfBook(obj, cb){
-		let sql = "select comment.*, user.avatar, user.id as uid, love.islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
+		let sql = "select comment.*, user.avatar, user.id as uid, ifnull(love.islike,0) as islike from (comment left join user on comment.name=user.name) left join love on comment.id=love.commentid and user.id = love.uid where user.name = comment.name and comment.subjectid = ? order by time desc limit ? offset ?;";
         db.execSql(
             sql,
 			[obj.subjectid, parseInt(obj.limit), parseInt(obj.offset)],
