@@ -7,10 +7,9 @@ var router = require("express").Router();
 
 router.get('/ser/note', function (req, res) {
     token.verifyToken(req, res, function (name) {
-        ds.queryUser(name, function (data) {
+        ds.queryUser(name, function (error, data) {
+            if (error) {res.json({code: -1, err: error}); return;}
             res.send(JSON.stringify({code: 0, data: data}));
-        }, function (err) {
-            res.send(JSON.stringify({code: -1, err: err}));
         })
     })
 });

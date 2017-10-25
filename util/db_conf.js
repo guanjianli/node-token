@@ -23,11 +23,11 @@ let execSql = function (sql, params, callback) {
         if (err) {
             let sta = mysql.format(sql, params);
             console.log("error sql code : ", sta);
-            callback(err);
+            callback && callback(err);
         } else {
             conn.query(sql, params, function (error, results, fields) {
                 conn.release();
-                callback(error, results, fields);
+                callback && callback(error, results, fields);
             });
         }
     });

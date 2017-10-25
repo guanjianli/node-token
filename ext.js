@@ -6,6 +6,7 @@ let girl = require("./other/makepicture.js");
 let tz = require("./other/timezone.js");
 let douban = require("./movie_douban/douban.js");
 let comment = require("./comment/comment.js");
+let post = require("./post/post.js");
 
 //设置跨域访问
 app.all('/ser/*', function (req, res, next) {
@@ -26,7 +27,7 @@ app.use(express.static('public'));
 
 //多个错误传递，参见https://expressjs.com/en/guide/error-handling.html
 function errorHandler (err, req, res, next) {
-    console.error("express error:"+err.stack);
+    //console.error("express error:"+err.stack);
     res.status(err.status || 500);
     res.render('error', { error: err })
 }
@@ -39,20 +40,22 @@ app.get("/info", function (req, res) {
 
 //登录逻辑
 app.use('/', login);
-app.use("/", note);
+app.use('/', note);
 
 //奇怪的图片下载 境内禁止
 //app.use("/",girl);
 
 //时区
-app.use("/time", tz);
+app.use('/time', tz);
 app.use('/movie', douban);
 
 //评论
 app.use("/comment", comment);
+app.use("/post", post);
 
 //在最后处理404?
 app.use(function (req, res, next) {
+    console.log('%s %s %s', req.method, req.url, req.path);
     let err = new Error('404 Not Found');
     err['status'] = 404;
     next(err);

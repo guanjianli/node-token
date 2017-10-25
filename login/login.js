@@ -13,7 +13,8 @@ router.get('/ser/login', function (req, res) {
         res.json({code: -2, detail: '没有输入帐号或密码'});
         return;
     }
-    ds.queryUser(req.query.name, function (results) {
+    ds.queryUser(req.query.name, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         //no find
         if (results.length < 1) {
             res.json({code: -4, detail: '用户不存在'});
@@ -28,8 +29,6 @@ router.get('/ser/login', function (req, res) {
                 })
             }
         }
-    }, function (err) {
-        res.json({code: -1, err: err});
     })
 });
 
@@ -39,18 +38,16 @@ router.get('/ser/register', function (req, res) {
         return;
     }
 
-    ds.queryUser(req.query.name, function (results) {
+    ds.queryUser(req.query.name, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         if (results.length >= 1) {
             res.json({code: -5, detail: '用户已被注册'});
         } else {
-            ds.insertUser(req.query.name, req.query.password, function () {
+            ds.insertUser(req.query.name, req.query.password, function (error) {
+                if (error) {res.json({code: -1, err: error}); return;}
                 res.json({code: 0, detail: '注册成功'});
-            }, function (err) {
-                res.json({code: -1, err: err});
             })
         }
-    }, function (err) {
-        res.json({code: -1, err: err});
     })
 
 });
@@ -60,7 +57,8 @@ router.get('/ser/change', function (req, res) {
         res.json({code: -2, detail: '参数缺失'});
         return;
     }
-    ds.queryUser(req.query.name, function (results) {
+    ds.queryUser(req.query.name, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         if (results.length < 1) {
             res.json({code: -4, detail: '用户不存在'});
         } else {
@@ -69,7 +67,8 @@ router.get('/ser/change', function (req, res) {
                 res.json({code: -3, detail: '旧密码错误'});
                 //todo 限制下次登录时间，不可以连续暴力刷新
             } else {
-                ds.changePasswd(req.query.name, req.query.password, function (results) {
+                ds.changePasswd(req.query.name, req.query.password, function (error, results) {
+                    if (error) {res.json({code: -1, err: error}); return;}
                     if (results.affectedRows >= 1) {
                         //修改密码成功后，以往所有的token会过期
                         token.deleteAll(req.query.name);
@@ -77,13 +76,9 @@ router.get('/ser/change', function (req, res) {
                     } else {
                         res.json({code: -6, detail: '修改失败，检查用户名与密码'});
                     }
-                }, function (err) {
-                    res.json({code: -1, err: err});
                 })
             }
         }
-    }, function (err) {
-        res.json({code: -1, err: err});
     })
 });
 
@@ -109,10 +104,9 @@ router.get('/ser/heartbeat', function (req, res) {
 router.post('/avatar', function (req, res) {
     token.verifyToken(req, res, function (useName) {
         upload.upload(req, res, function (url) {
-            ds.setAvatar(url, useName, function () {
+            ds.setAvatar(url, useName, function (error) {
+                if (error) {res.json({code: -1, err: error}); return;}
                 res.json({code: 0, avatar: url});
-            }, function (err) {
-                res.json({code: -1, err: err});
             })
         });
     })
@@ -128,7 +122,8 @@ router.post('/appupdate', function (req, res) {
 //以token获得用户自己的资料
 router.get('/user/myinfo', function (req, res) {
     token.verifyToken(req, res, function (useName) {
-        ds.queryUser(useName, function (result) {
+        ds.queryUser(useName, function (error, result) {
+            if (error) {res.json({code: -1, err: error}); return;}
             let u = result[0];
             res.json(_.extend({code: 0}, {avatar: u.avatar, registertime: u.registertime, viplv: u.vip}));
         })

@@ -8,14 +8,17 @@ function startServer(){
     console.log('start ext');
     server = spawn('node',['ext.js']);
     console.log('node js pid is '+server.pid);
+    server.stdout.on("data", function (data) {
+        console.log(data);
+    });
     server.on('close',function(code,signal){
         console.log("close,by:"+JSON.stringify(arguments));
-        server.kill(signal);
+        signal && server.kill(signal);
         server = startServer();
     });
     server.on('error',function(code,signal){
         console.log("error,by:"+arguments);
-        server.kill(signal);
+        signal && server.kill(signal);
         server = startServer();
     });
     return server;

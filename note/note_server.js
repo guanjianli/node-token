@@ -37,7 +37,8 @@ exports.insertNote = function (name, note, status, cb, reject) {
 
 exports.deleteNote = function (name, ids, cb, reject) {
     db.execSql(
-        "delete from note where id in (" + ids + ") and name = " + query.pool.escape(name) + ";",
+        "delete from note where id in (" + ids + ") and name = ?;",
+		[name],
         function (err, results, fields) {
             if (err) {
                 reject && reject(err);

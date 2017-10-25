@@ -107,7 +107,8 @@ exports.deleteAll = function(name){
 };
 
 exports.logoutAToken = function(token, res, cb){
-    ds.delAToken(token, function (results) {
+    ds.delAToken(token, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         if (results.affectedRows < 1) {
             res.json({code: -30, detail: '没有对应的token,可能是已退出登录,或者修改了密码'});
         } else {
@@ -126,28 +127,26 @@ function doSign(obj, time) {
 }
 
 function getRefreshTokenByToken(token, req, res, cb) {
-    ds.queryToken(token, function (results) {
+    ds.queryToken(token, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         if (results.length < 1) {
             res.json({code: -31, detail: 'token没有对应的refreshtoken,可能是已退出登录,或者修改了密码'});
         } else {
             var u = results[0];
             cb(u.refreshtoken);
         }
-    }, function (err) {
-        res.json({code: -1, err: err});
     })
 }
 
 function isExistRefreshToken(rToken, req, res, cb) {
-    ds.isExistRefreshtoken(rToken, function (results) {
+    ds.isExistRefreshtoken(rToken, function (error, results) {
+        if (error) {res.json({code: -1, err: error}); return;}
         if (results.length < 1) {
             res.json({code: -32, detail: '没有对应的refreshtoken,可能是已退出登录,或者修改了密码'});
         } else {
             var u = results[0];
             cb(u.refreshtoken);
         }
-    }, function (err) {
-        res.json({code: -1, err: err});
     })
 }
 

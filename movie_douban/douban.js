@@ -17,9 +17,10 @@ router.get('/list', function (req, res) {
     }else {
         ds.queryMovie({limit:req.query.limit, offset:req.query.offset}, function (err, results) {
             if(err){
-                res.json(_.extend({code: -1001}, {err:err}));
+                res.json(_.extend({code: -1}, {err:err}));
                 return;
             }
+            results = _.map(results, function(it){return _.omit(it, 'gaintime')});
             res.json({code: 0, data: results});
         })
     }
