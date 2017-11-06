@@ -7,7 +7,7 @@ var router = require("express").Router();
 
 router.get('/ser/note', function (req, res) {
     token.verifyToken(req, res, function (name) {
-        ds.queryUser(name, function (error, data) {
+        ds.queryNote(name, function (error, data) {
             if (error) {res.json({code: -1, err: error}); return;}
             res.send(JSON.stringify({code: 0, data: data}));
         })
@@ -19,14 +19,13 @@ router.get('/ser/addnote', function (req, res) {
         return;
     }
     token.verifyToken(req, res, function (name) {
-        ds.insertNote(name, req.query.note, req.query.status ? req.query.status : 1, function (results) {
+        ds.insertNote(name, req.query.note, req.query.status ? req.query.status : 1, function (error, results) {
+            if (error) {res.json({code: -1, err: error}); return;}
             if (results.affectedRows >= 1) {
                 res.send(JSON.stringify({code: 0, detail: '插入笔记成功!'}));
             } else {
                 res.send(JSON.stringify({code: 0, detail: 'results affectedRows 0'}));
             }
-        }, function (erro) {
-            res.send(JSON.stringify({code: -1, err: erro}));
         })
     })
 });
@@ -36,7 +35,8 @@ router.get('/ser/deletenote', function (req, res) {
         return;
     }
     token.verifyToken(req, res, function (name) {
-        ds.deleteNote(name, req.query.ids, function (results) {
+        ds.deleteNote(name, req.query.ids, function (error, results) {
+            if (error) {res.json({code: -1, err: error}); return;}
             if (results.affectedRows >= 1) {
                 res.send(JSON.stringify({code: 0, detail: '删除笔记成功!'}));
             } else {
@@ -53,7 +53,8 @@ router.get('/ser/notestatus', function (req, res) {
             res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
             return;
         } else {
-            ds.setStatus(name, req.query.status, req.query.id, function (results) {
+            ds.setStatus(name, req.query.status, req.query.id, function (error, results) {
+                if (error) {res.json({code: -1, err: error}); return;}
                 if (results.affectedRows >= 1) {
                     res.send(JSON.stringify({code: 0, detail: '设置笔记状态成功!'}));
                 } else {
@@ -71,7 +72,8 @@ router.get('/ser/notecontent', function (req, res) {
             res.send(JSON.stringify({code: -2, detail: '参数缺失'}));
             return;
         } else {
-            ds.setContent(name, req.query.content, req.query.id, function (results) {
+            ds.setContent(name, req.query.content, req.query.id, function (error, results) {
+                if (error) {res.json({code: -1, err: error}); return;}
                 if (results.changedRows >= 1) {
                     res.send(JSON.stringify({code: 0, detail: '设置笔记内容成功!'}));
                 } else {
