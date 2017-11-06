@@ -7,6 +7,7 @@ let tz = require("./other/timezone.js");
 let douban = require("./movie_douban/douban.js");
 let comment = require("./comment/comment.js");
 let post = require("./post/post.js");
+let dota = require("./other/dota.js");
 
 //设置跨域访问
 app.all('/ser/*', function (req, res, next) {
@@ -53,6 +54,7 @@ app.use('/movie', douban);
 app.use("/comment", comment);
 app.use("/post", post);
 
+app.use("/dota", dota);
 //在最后处理404?
 app.use(function (req, res, next) {
     console.log('%s %s %s', req.method, req.url, req.path);

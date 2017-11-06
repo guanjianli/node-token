@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+</body>
+
+<script type="text/javascript">
+
+    function createXMLHttpRequest() {
+        var xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+            if (xmlHttp.overrideMimeType)
+                xmlHttp.overrideMimeType('text/xml');
+        } else if (window.ActiveXObject) {
+            try {
+                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {
+                }
+            }
+        }
+        return xmlHttp;
+    }
+
+    var callback = function(t){
+        if(xmlHttp.readyState == 4){//描述一种"已加载"状态；此时，响应已经被完全接收。
+            if(xmlHttp.status == 200){//200表示成功收到
+//                console.log("The Server Replied with:" + xmlHttp.responseText.toString())
+                var l = JSON.parse(xmlHttp.responseText);
+
+                var body = document.querySelector('body')
+                body.innerHTML = '';
+                for(var i in l){
+                    tx = l[i];
+                    body.insertAdjacentHTML('afterbegin', '<p>'+decodeURIComponent(tx)+'</p>')
+                }
+            }
+        }
+    }
+    var sendInfo= function(){
+        xmlHttp = createXMLHttpRequest();
+        var url = "https://www.liguanjian.com/dota/get";
+        xmlHttp.open("GET", url, true);// 异步处理返回
+        xmlHttp.onreadystatechange = callback;
+        xmlHttp.setRequestHeader("Content-Type",
+                "application/x-www-form-urlencoded;");
+        xmlHttp.send();
+    }
+
+    setInterval(sendInfo, 2000);
+</script>
+</html>
