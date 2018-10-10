@@ -14,11 +14,11 @@
     "express": "^4.15.3",
     "mysql": "",
     "jsonwebtoken": "",
-    "jsonwebtoken-refresh":"",
-    "underscore":"",
-    "async":"",
-    "formidable":"",
-	"request":"",
-	"cheerio":""
+    "jsonwebtoken-refresh": "",
+    "underscore": "",
+    "async": "",
+    "formidable": "",
+    "request": "",
+    "cheerio": ""
   }
 }
