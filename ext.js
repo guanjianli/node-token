@@ -2,7 +2,7 @@ let express = require('express');
 let app = express();
 let login = require("./login/login.js");
 let note = require("./note/note.js");
-let girl = require("./other/makepicture.js");
+//let girl = require("./other/makepicture.js");
 let tz = require("./other/timezone.js");
 let douban = require("./movie_douban/douban.js");
 let comment = require("./comment/comment.js");
@@ -70,5 +70,8 @@ let options = {
     key: fs.readFileSync('./liguanjian.key'),
     cert: fs.readFileSync('./liguanjian.pem')
 };
-https.createServer(options, app).listen(443);
+let server =  https.createServer(options, app).listen(443);
 
+//以前上web的服务器，在这里是ws，既是websocket的服务器
+let wss = require("./wsss.js");
+wss.init(server);
